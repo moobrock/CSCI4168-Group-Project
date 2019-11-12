@@ -24,6 +24,19 @@ public class EnemyController : MonoBehaviour
         SetDestination();
     }
 
+    private void Update()
+    {
+        // keep rotation
+        transform.rotation = Quaternion.identity;
+
+        DevelopmentControls();
+    }
+
+    // call when game is paused or unpaused
+    public void OnPause(bool pause)
+    {
+    }
+
     private void SetDestination()
     {
         destination = GameManager.gameManager.barnAttackPosition.position;
@@ -35,14 +48,6 @@ public class EnemyController : MonoBehaviour
     {
         destination = position;
         navMeshAgent.SetDestination(position);
-    }
-
-    private void Update()
-    {
-        // keep rotation
-        transform.rotation = Quaternion.identity;
-
-        DevelopmentControls();
     }
 
     // manually control enemy for development
