@@ -8,18 +8,22 @@ public class EnemyController : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     private Vector3 destination;
 
-    private float moveDist = 1f;
+    private float moveDist = 0.1f;
+    private float baseSpeed = 0.5f;
 
     private float baseDamage = 0.1f;        // base damage done every attackFreqency seconds
     private float damageModifier = 0.05f;   // slight random modifier (+/-) to damage
     private float attackFrequency = 1f;     // in seconds
     private float attackRange = 1f;         // can only attack in this range
 
+    private float health = 1f;
+
     private TowerController attackTarget;
 
     private void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.speed = baseSpeed;
 
         SetDestination();
     }
@@ -28,17 +32,13 @@ public class EnemyController : MonoBehaviour
     {
         // keep rotation
         transform.rotation = Quaternion.identity;
-
-        DevelopmentControls();
-    }
-
-    // call when game is paused or unpaused
-    public void OnPause(bool pause)
-    {
     }
 
     private void SetDestination()
     {
+        if (GameManager.gameManager.barnAttackPosition == null)
+            GameManager.gameManager.FindBarn();
+
         destination = GameManager.gameManager.barnAttackPosition.position;
 
         SetDestination(destination);
@@ -50,32 +50,10 @@ public class EnemyController : MonoBehaviour
         navMeshAgent.SetDestination(position);
     }
 
-    // manually control enemy for development
-    private void DevelopmentControls()
-    {
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            navMeshAgent.Move(new Vector3(0, 0, moveDist));
-        }
-
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            navMeshAgent.Move(new Vector3(0, 0, -moveDist));
-        }
-
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            navMeshAgent.Move(new Vector3(-moveDist, 0, 0));
-        }
-
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            navMeshAgent.Move(new Vector3(moveDist, 0, 0));
-        }
-    }
-
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Trigger enter - " + other.name);
+
         if (other.tag == "Tower" || other.tag == "Barn")
         {
             // get tower attack position
@@ -98,6 +76,11 @@ public class EnemyController : MonoBehaviour
                     StartCoroutine(ApproachTower());
                 }
             }
+
+            else
+            {
+                attackTarget = null;
+            }
         }
     }
 
@@ -105,6 +88,8 @@ public class EnemyController : MonoBehaviour
     {
         while (attackTarget != null)
         {
+            Debug.Log("Approaching");
+
             float distance = (transform.position - attackTarget.GetAttackPosition().position).magnitude;
 
             // in attack range of tower
@@ -122,6 +107,8 @@ public class EnemyController : MonoBehaviour
 
     private IEnumerator AttackTower()
     {
+        Debug.Log("Attack target " + attackTarget.name + ", health: " + attackTarget.GetHealth() );
+
         while (attackTarget != null && attackTarget.GetHealth() > 0f)
         {
             float damage = baseDamage + Random.Range(-damageModifier, damageModifier);
@@ -143,5 +130,29 @@ public class EnemyController : MonoBehaviour
         }
 
         SetDestination();
+    }
+
+    public void ModifySpeed(float speedModifier)
+    {
+        navMeshAgent.speed = baseSpeed * speedModifier;
+    }
+
+    public void ResetSpeed()
+    {
+        if (navMeshAgent != null)
+            navMeshAgent.speed = baseSpeed;
+    }
+
+    public void Damage(float damage)
+    {
+        health -= damage;
+
+        Debug.Log("Enemy damaged for " + damage + " points. Health = " + health);
+
+        if (health <= 0f)
+        {
+            // kill enemy
+            Destroy(this.gameObject);
+        }
     }
 }

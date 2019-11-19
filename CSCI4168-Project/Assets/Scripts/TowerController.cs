@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class TowerController : MonoBehaviour
 {
-    private Transform attackPosition;
-    private GameObject towerModel;
+    protected Transform attackPosition;
+    protected GameObject towerModel;
 
     public static float attackRadius = 5f;
-    private static float health = 1f;
+    public float health = 1f;
 
-    void Start()
+    protected void Start()
     {
         attackPosition = transform.GetChild(0);
         towerModel = transform.GetChild(1).gameObject;
@@ -41,8 +41,13 @@ public class TowerController : MonoBehaviour
         return false;
     }
 
-    private void DestroyTower()
+    protected void DestroyTower()
     {
-        towerModel.SetActive(false);
+        Debug.Log(name + " was destroyed");
+
+        if (tag == "Barn")
+            GameManager.gameManager.EndRound();
+
+        Destroy(this.gameObject);
     }
 }
