@@ -186,9 +186,9 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 2.5
-  m_Height: 1.2800003
-  m_Direction: 1
+  m_Radius: 8
+  m_Height: 3
+  m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3578721773046684903
 MonoBehaviour:
@@ -204,6 +204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trebucheggPrefab: {fileID: 338068301583999433, guid: 64c79efa07ea5fa4a9872046435995ab,
     type: 3}
+  targettedEnemy: {fileID: 0}
   shootDirection: {x: 0, y: 0, z: 0}
 --- !u!54 &7682018210726516072
 Rigidbody:
