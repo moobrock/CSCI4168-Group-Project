@@ -10,14 +10,13 @@ public class TrebucheggPlayerAction : PlayerActionDraggable
 
     protected override void OnDrop()
     {
-        RaycastHit hit;
-
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        if (Physics.Raycast(ray, out hit))
+        RaycastHit[] hits = Physics.RaycastAll(ray);
+        
+        foreach (RaycastHit hit in hits)
         {
             OnRaycastHit(hit.transform);
-
         }
 
         base.OnDrop();
