@@ -8554,7 +8554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   barnAttackPosition: {fileID: 0}
-  enemySpawn: {fileID: 0}
+  enemySpawns: []
   enemyPrefab: {fileID: 4480620268913781026, guid: 0da03eb04db80e644b5638a2a51670d3,
     type: 3}
 --- !u!4 &2134313426
@@ -9289,6 +9289,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6853723036204898552, guid: f68ac0ce8cdb4ff47a74ec9ec6180a2c,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f68ac0ce8cdb4ff47a74ec9ec6180a2c, type: 3}

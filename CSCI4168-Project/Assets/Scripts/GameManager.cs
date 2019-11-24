@@ -9,8 +9,10 @@ public class GameManager : MonoBehaviour
 
     public Transform barnAttackPosition;
 
-    public Transform enemySpawn;
+    public Transform[] enemySpawns;
     public GameObject enemyPrefab;
+
+    private int enemySpawnIndex = 0;
 
     private float nextEnemySpawnTime = 0f;  // time until next enemy is spawned (enemy spawn rate + random variance) 
     private float enemySpawnRate = 8f;      // in seconds
@@ -43,7 +45,9 @@ public class GameManager : MonoBehaviour
 
             if (time > nextEnemySpawnTime)
             {
-                GameObject enemy = GameObject.Instantiate(enemyPrefab, enemySpawn.position, Quaternion.identity);
+                enemySpawnIndex = (enemySpawnIndex + 1) % enemySpawns.Length;
+
+                GameObject enemy = GameObject.Instantiate(enemyPrefab, enemySpawns[enemySpawnIndex].position, Quaternion.identity);
 
                 time = 0f;
 
@@ -56,6 +60,8 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
+        StopAllCoroutines();
+
         roundIndex = 1;
 
         StartCoroutine(LoadScene());
@@ -63,25 +69,29 @@ public class GameManager : MonoBehaviour
 
     public void EndRound()
     {
-        enemySpawn = null;
+        StopAllCoroutines();
+
+        enemySpawns = null;
         barnAttackPosition = null;
 
+        roundIndex = SceneManager.GetActiveScene().buildIndex + 1;
 
-        if (roundIndex >= 0 && roundIndex < SceneManager.sceneCount)
+        Debug.Log("End of round - changing scene." + 
+                  "\n\tScene index: " + roundIndex + 
+                  "\n\tScene count: " + SceneManager.sceneCountInBuildSettings +
+                  "\n\tOld scene: " + SceneManager.GetActiveScene().name + 
+                  ((SceneManager.sceneCount > roundIndex) ? 
+                  ("\n\tNext scene: " + SceneManager.GetSceneAt(roundIndex)) : ""));
+
+        if (roundIndex >= 0 && roundIndex < SceneManager.sceneCountInBuildSettings)
         {
-            Debug.Log("End of round - changing scene to " + SceneManager.GetSceneAt(roundIndex).name);
-
             // load next round
             StartCoroutine(LoadScene());
-
-            roundIndex++;
         }
 
         else
         {
             roundIndex = 0;
-
-            Debug.Log("End of round - changing scene to " + SceneManager.GetSceneAt(roundIndex).name);
 
             SceneManager.LoadScene(roundIndex);
         }
@@ -89,7 +99,7 @@ public class GameManager : MonoBehaviour
 
     public void EndGame()
     {
-        enemySpawn = null;
+        enemySpawns = null;
         barnAttackPosition = null;
 
         // load front end
@@ -122,10 +132,17 @@ public class GameManager : MonoBehaviour
 
         // find spawn and barn positions under the Level Base object
         barnAttackPosition = GameObject.Find("Level Base")?.transform.Find("Barn")?.transform.GetChild(0);
-        enemySpawn = GameObject.Find("Level Base")?.transform.Find("Enemy Spawn")?.transform;
+
+        int count = GameObject.Find("Level Base")?.transform.Find("Enemy Spawns")?.childCount ?? 0;
+        enemySpawns = new Transform[count];
+
+        for (int i = 0; i < count; i++)
+        {
+            enemySpawns[i] = GameObject.Find("Level Base")?.transform.Find("Enemy Spawns")?.GetChild(i).transform;
+        }
 
         // found the positions, start spawning enemies
-        if (enemySpawn != null && barnAttackPosition != null)
+        if (enemySpawns != null && enemySpawns.Length > 0 && barnAttackPosition != null)
         {
             StopAllCoroutines();
             StartCoroutine(SpawnEnemies());

@@ -8,14 +8,14 @@ public class CameraController : MonoBehaviour
 
     private float boundaryWidth = 40f;
 
-    private float speed = 0.5f;
+    private float speed = 0.25f;
 
     private void Start()
     {
         cameraBoundary = GameObject.Find("Level Base")?.transform.Find("Camera Boundary")?.GetComponent<RectTransform>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         // get mouse position in screen-space
         Vector3 mousePositionScreen = Input.mousePosition;

@@ -23,13 +23,16 @@ public class PlayerActionDraggable : MonoBehaviour
             if (rectTransform.rect.Contains(rectTransform.InverseTransformPoint(Input.mousePosition)))
             {
                 offset = Input.mousePosition - startPos;
-
-                Debug.Log("Start drag");
-
-                StartCoroutine(DragIcon());
+                StartDrag();
             }
         }
     }
+
+    protected virtual void StartDrag()
+    {
+        StartCoroutine(DragIcon());
+    }
+
 
     protected IEnumerator DragIcon()
     {

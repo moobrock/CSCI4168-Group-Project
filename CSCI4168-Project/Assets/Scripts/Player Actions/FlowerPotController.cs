@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BrokenFlowerPotController : MonoBehaviour
+public class FlowerPotController : MonoBehaviour
 {
     private float health = 2.5f;
 
