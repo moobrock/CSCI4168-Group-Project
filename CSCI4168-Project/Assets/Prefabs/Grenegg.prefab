@@ -72,8 +72,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1006210828642949250, guid: 8cfafac989bed3d46867024a2e5494b5,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: e69245aaf55fcdd4ebb47dad972ff0b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -111,6 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   particleEffect: {fileID: 0}
+  enemyControllers: []
 --- !u!1 &4817004455429630972
 GameObject:
   m_ObjectHideFlags: 0
