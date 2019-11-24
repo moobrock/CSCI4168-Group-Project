@@ -16,6 +16,11 @@ public class TrebucheggProjectile : MonoBehaviour
         StartCoroutine(Destroy());
     }
 
+    private void Update()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.up * 0.5f, 5f);
+    }
+
     private IEnumerator Destroy()
     {
         while (true)
@@ -32,16 +37,12 @@ public class TrebucheggProjectile : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        foreach (ContactPoint contact in collision.contacts)
-        {
-            if (contact.otherCollider.tag == "Enemy")
-            {
-                EnemyController enemy = contact.otherCollider.GetComponent<EnemyController>();
+        Debug.Log("Trebuchegg Projectile damaging enemy for: " + damage);
 
-                enemy.Damage(damage);
-            }
-        }
+        EnemyController enemy = other.transform?.GetComponent<EnemyController>();
+
+        enemy?.Damage(damage);
     }
 }

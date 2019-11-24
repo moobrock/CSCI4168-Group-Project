@@ -33,8 +33,9 @@ public class TrebucheggController : MonoBehaviour
                 shootDirection.y = 0;
             }
 
-            GameObject projectile = Instantiate(trebucheggPrefab, transform.position, Quaternion.identity); // TODO: rotate projectile towards enemy
+            GameObject projectile = Instantiate(trebucheggPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity); // TODO: rotate projectile towards enemy
             projectile.transform.LookAt(transform.position + shootDirection);
+            projectile.transform.rotation = Quaternion.Euler(90, projectile.transform.rotation.eulerAngles.y, projectile.transform.rotation.eulerAngles.z);
             projectile.GetComponent<Rigidbody>()?.AddForce(shootDirection * force, ForceMode.Impulse);
 
             yield return new WaitForSeconds(fireRate);
