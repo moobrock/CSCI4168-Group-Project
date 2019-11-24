@@ -6,7 +6,7 @@ public class GreneggController : MonoBehaviour
 {
     public GameObject particleEffect;
 
-    public List<EnemyController> enemyControllers;
+    private List<EnemyController> enemyControllers;
 
     private float damage = 0.5f;
 
@@ -19,7 +19,22 @@ public class GreneggController : MonoBehaviour
 
     private IEnumerator Explode()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.5f);
+
+        Ray ray = new Ray(transform.position, transform.position + transform.forward);
+        Physics.SphereCast(ray, 5f);
+
+        RaycastHit[] hits = Physics.SphereCastAll(ray, 5f, 5f);
+
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.transform?.tag == "Enemy")
+            {
+                EnemyController enemy = hit.transform.GetComponent<EnemyController>();
+
+                enemyControllers.Add(enemy);
+            }
+        }
 
         // TODO: play particle effect
 
