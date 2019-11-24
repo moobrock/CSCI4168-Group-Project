@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     private float enemySpawnVariance = 1f;  // in seconds
 
     private float time = 0f;
+    private float startTime = 0f;
+    private float roundTime = 5 * 60f;
 
     public static GameManager gameManager;
 
@@ -34,6 +36,16 @@ public class GameManager : MonoBehaviour
             gameManager = this;
             DontDestroyOnLoad(this);
             FindReferences();
+        }
+
+        startTime = Time.realtimeSinceStartup;
+    }
+
+    private void Update()
+    {
+       if (Time.realtimeSinceStartup > startTime + roundTime)
+        {
+            EndRound();
         }
     }
 

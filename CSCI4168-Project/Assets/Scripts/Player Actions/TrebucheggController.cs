@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class TrebucheggController : MonoBehaviour
 {
-    private float fireRate = 0.6f;
-    private float force = 5f;
-
-    private float timeToLive = 5f;     // time to live, in seconds. (GameObject is destroyed after this much time)
-    private float time = 0f;
+    private float fireRate = 1.6f;
+    private float force = 3f;
 
     public GameObject trebucheggPrefab;
 

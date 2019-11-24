@@ -7,13 +7,13 @@ public class TrebucheggProjectile : MonoBehaviour
     private float damage = 0.1f;
 
     private float time;
-    private float timeToLive = 5f;
+    private float timeToLive = 10f;
 
     private void Start()
     {
         time = 0f;
 
-        //StartCoroutine(Destroy());
+        StartCoroutine(Destroy());
     }
 
     private IEnumerator Destroy()
@@ -27,9 +27,9 @@ public class TrebucheggProjectile : MonoBehaviour
                 Destroy(gameObject);
                 yield break;
             }
-        }
 
-        yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
