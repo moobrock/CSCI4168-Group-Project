@@ -5,9 +5,12 @@ using UnityEngine;
 public class TrebucheggProjectile : MonoBehaviour
 {
     private float damage = 0.1f;
+    private float speed = 0.05f;
 
     private float time;
     private float timeToLive = 10f;
+
+    private Transform target;
 
     private void Start()
     {
@@ -16,11 +19,30 @@ public class TrebucheggProjectile : MonoBehaviour
         StartCoroutine(Destroy());
     }
 
-    private void Update()
+    public void SetTarget(Transform target)
     {
-        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.up * 0.5f, 5f);
+        this.target = target;
     }
 
+    private void FixedUpdate()
+    {
+        // follow the targetted enemy, if there is one
+        if (target != null)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position + transform.up * 0.5f, speed);
+        }
+
+        // if the target enemy was lost or never existed, just continue forward
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.up * 0.5f, speed);
+        }
+    }
+
+    /// <summary>
+    /// Destroys the projectile timeToLive seconds after started.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator Destroy()
     {
         while (true)
@@ -37,12 +59,20 @@ public class TrebucheggProjectile : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Damage enemies when trigged.
+    /// </summary>
+    /// <param name="other">The other collider</param>
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("Trebuchegg Projectile damaging enemy for: " + damage);
 
         EnemyController enemy = other.transform?.GetComponent<EnemyController>();
 
-        enemy?.Damage(damage);
+        if (enemy != null)
+        {
+            enemy.Damage(damage);
+            Destroy(gameObject);
+        }
     }
 }

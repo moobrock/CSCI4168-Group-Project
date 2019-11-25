@@ -152,6 +152,8 @@ public class EnemyController : MonoBehaviour
         if (health <= 0f)
         {
             // kill enemy
+            GameManager.gameManager.LogKill();
+
             Destroy(this.gameObject);
         }
     }

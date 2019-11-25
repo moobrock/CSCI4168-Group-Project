@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,9 +19,11 @@ public class GameManager : MonoBehaviour
     private float enemySpawnRate = 8f;      // in seconds
     private float enemySpawnVariance = 1f;  // in seconds
 
-    private float time = 0f;
     private float startTime = 0f;
     private float roundTime = 5 * 60f;
+    public Text roundTimerText;
+
+    private int killCounter = 0;
 
     public static GameManager gameManager;
 
@@ -28,7 +31,7 @@ public class GameManager : MonoBehaviour
     {
         if (gameManager != null)
         {
-            Destroy(this);
+            Destroy(gameObject);
         }
 
         else
@@ -51,6 +54,8 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator SpawnEnemies()
     {
+        float time = 0f;
+
         while (true)
         {
             time += Time.deltaTime;
@@ -75,6 +80,7 @@ public class GameManager : MonoBehaviour
         StopAllCoroutines();
 
         roundIndex = 1;
+        killCounter = 0;
 
         StartCoroutine(LoadScene());
     }
@@ -97,6 +103,7 @@ public class GameManager : MonoBehaviour
 
         if (roundIndex >= 0 && roundIndex < SceneManager.sceneCountInBuildSettings)
         {
+            killCounter = 0;
             // load next round
             StartCoroutine(LoadScene());
         }
@@ -128,7 +135,16 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator LoadScene()
     {
-        AsyncOperation op = SceneManager.LoadSceneAsync(roundIndex);
+        AsyncOperation op = SceneManager.LoadSceneAsync("EndOfRound");
+
+        while (!op.isDone)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        yield return new WaitForSecondsRealtime(5.0f);
+
+        op = SceneManager.LoadSceneAsync(roundIndex);
 
         while (!op.isDone)
         {
@@ -136,21 +152,44 @@ public class GameManager : MonoBehaviour
         }
 
         FindReferences();
+
+        float time = 0f;
+        
+
+        while (time < roundTime)
+        {
+            time += Time.deltaTime;
+
+            if (roundTimerText != null)
+            {
+                roundTimerText.text = (int)(roundTime) / 60 + ":" + ((int)roundTime % 60);
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        EndRound();
     }
 
     private void FindReferences()
     {
         Debug.Log("Finding scene references in scene " + SceneManager.GetActiveScene().name);
 
-        // find spawn and barn positions under the Level Base object
-        barnAttackPosition = GameObject.Find("Level Base")?.transform.Find("Barn")?.transform.GetChild(0);
-
-        int count = GameObject.Find("Level Base")?.transform.Find("Enemy Spawns")?.childCount ?? 0;
-        enemySpawns = new Transform[count];
-
-        for (int i = 0; i < count; i++)
+        Transform levelBase = GameObject.Find("Level Base")?.transform;
+        // find spawn and barn positions under the levelBase object
+        if (levelBase != null)
         {
-            enemySpawns[i] = GameObject.Find("Level Base")?.transform.Find("Enemy Spawns")?.GetChild(i).transform;
+            roundTimerText = levelBase.Find("UI")?.Find("Round Timer")?.GetComponent<Text>();
+
+            barnAttackPosition = levelBase.Find("Barn")?.transform.GetChild(0);
+
+            int count = levelBase.Find("Enemy Spawns")?.childCount ?? 0;
+            enemySpawns = new Transform[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                enemySpawns[i] = levelBase.Find("Enemy Spawns")?.GetChild(i).transform;
+            }
         }
 
         // found the positions, start spawning enemies
@@ -163,5 +202,10 @@ public class GameManager : MonoBehaviour
         // positions should be found unless it is the front end
         else
             Debug.LogWarning("No enemy spawn or barn attack position - is this the front end?");
+    }
+
+    public void LogKill()
+    {
+        killCounter++;
     }
 }
