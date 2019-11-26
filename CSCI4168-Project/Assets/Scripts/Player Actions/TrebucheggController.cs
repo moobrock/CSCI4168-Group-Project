@@ -8,6 +8,7 @@ public class TrebucheggController : MonoBehaviour
     private float force = 3f;
 
     public GameObject trebucheggPrefab;
+    public Animator animator;
 
     public EnemyController targettedEnemy;
     public Vector3 shootDirection;
@@ -63,7 +64,7 @@ public class TrebucheggController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        shootDirection = (targettedEnemy?.GetTransform() != null) ? -(transform.position - targettedEnemy.GetTransform().position) : -transform.up;
+        shootDirection = (targettedEnemy?.GetTransform() != null) ? -(transform.position - targettedEnemy.GetTransform().position) : -transform.forward;
     }
 
     // fires towards last seen enemy every fireRate seconds
@@ -73,6 +74,7 @@ public class TrebucheggController : MonoBehaviour
         {
             if (targettedEnemy != null && targettedEnemy.GetTransform() != null)
             {
+               
                 GameObject projectile = Instantiate(trebucheggPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity); // TODO: rotate projectile towards enemy
                 projectile.transform.LookAt(transform.position + shootDirection);
 
@@ -81,6 +83,14 @@ public class TrebucheggController : MonoBehaviour
 
                 euler = Quaternion.Euler(-90, projectile.transform.rotation.eulerAngles.y, projectile.transform.rotation.eulerAngles.z);
                 transform.rotation = euler;
+
+                projectile.SetActive(false);                // hide bullet until ready to fire
+
+                animator.SetTrigger("shoot");
+
+                yield return new WaitForSeconds(0.983f);    // wait for animation to end
+
+                projectile.SetActive(true);
 
                 projectile.GetComponent<Rigidbody>()?.AddForce(shootDirection * force, ForceMode.Impulse);
 

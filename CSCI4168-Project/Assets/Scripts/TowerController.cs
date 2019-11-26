@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class TowerController : MonoBehaviour
 {
+    public HealthController healthController;
+
     protected Transform attackPosition;
     protected GameObject towerModel;
 
     public static float attackRadius = 5f;
     public float health = 1f;
+    public float maxHealth = 1f;
 
     protected void Start()
     {
@@ -32,6 +35,8 @@ public class TowerController : MonoBehaviour
             {
                 DestroyTower();
             }
+
+            healthController.SetHealth(health / maxHealth);
 
             return true;
         }

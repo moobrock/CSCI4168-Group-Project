@@ -80,6 +80,8 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartRound()
     {
+        Debug.Log("Starting Round " + (roundIndex));
+
         StopAllCoroutines();
 
         startTime = Time.realtimeSinceStartup;
@@ -172,6 +174,8 @@ public class GameManager : MonoBehaviour
 
             if (roundTimerText != null)
             {
+                Debug.Log("Setting round timer text");
+
                 roundTimerText.text = (int)(roundTime - time) / 60 + ":" + ((int)(roundTime - time) % 60);
             }
 
@@ -195,11 +199,16 @@ public class GameManager : MonoBehaviour
         else
         {
             Transform levelBase = GameObject.Find("Level Base")?.transform;
+
+            Debug.Log("Level Base found? " + (levelBase != null));
+
             // find spawn and barn positions under the levelBase object
             if (levelBase != null)
             {
                 roundTimerText = levelBase.Find("UI")?.Find("Round Timer")?.GetComponent<Text>();
                 roundTimerText.text = (int)(roundTime) / 60 + ":" + ((int)roundTime % 60);
+
+                Debug.Log("Round Timer found? " + (roundTimerText != null));
 
                 barnAttackPosition = levelBase.Find("Barn")?.transform.GetChild(0);
 

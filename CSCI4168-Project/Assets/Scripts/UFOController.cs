@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class UFOController : MonoBehaviour, EnemyController
 {
+    public HealthController healthController;
+
     private Rect boundaryRect;
 
     private Vector3 targetPosition;
@@ -14,6 +16,7 @@ public class UFOController : MonoBehaviour, EnemyController
     private float attackRange = 1f;         // can only attack in this range
 
     private float health = 1f;
+    private float maxHealth = 1f;
 
     private TowerController attackTarget;
 
@@ -158,6 +161,8 @@ public class UFOController : MonoBehaviour, EnemyController
 
             Destroy(this.gameObject);
         }
+
+        healthController.SetHealth(health / maxHealth);
     }
 
     //returns child transform (UFO model) or this transform if not found

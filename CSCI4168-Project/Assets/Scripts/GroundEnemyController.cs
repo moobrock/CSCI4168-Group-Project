@@ -5,6 +5,8 @@ using UnityEngine.AI;
 
 public class GroundEnemyController : MonoBehaviour, EnemyController
 {
+    public HealthController healthController;
+
     private NavMeshAgent navMeshAgent;
     private Vector3 destination;
 
@@ -16,6 +18,7 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
     private float attackRange = 1f;         // can only attack in this range
 
     private float health = 1f;
+    private float maxHealth = 1f;
 
     private TowerController attackTarget;
 
@@ -154,5 +157,7 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
 
             Destroy(this.gameObject);
         }
+
+        healthController.SetHealth(health / maxHealth);
     }
 }
