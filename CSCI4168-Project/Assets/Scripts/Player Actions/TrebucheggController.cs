@@ -81,14 +81,24 @@ public class TrebucheggController : MonoBehaviour
                 Quaternion euler = Quaternion.Euler(90, projectile.transform.rotation.eulerAngles.y, projectile.transform.rotation.eulerAngles.z);
                 projectile.transform.rotation = euler;
 
-                euler = Quaternion.Euler(-90, projectile.transform.rotation.eulerAngles.y, projectile.transform.rotation.eulerAngles.z);
-                transform.rotation = euler;
-
                 projectile.SetActive(false);                // hide bullet until ready to fire
 
                 animator.SetTrigger("shoot");
 
-                yield return new WaitForSeconds(0.983f);    // wait for animation to end
+                // wait for animation to end
+                float waitTime = 0.983f, time = 0f;
+
+                while (time < waitTime)
+                {
+                    time += Time.deltaTime;
+
+                    // look at enemy
+                    transform.LookAt(targettedEnemy?.GetTransform()?.position ?? shootDirection);
+                    euler = Quaternion.Euler(-90, transform.rotation.eulerAngles.y,transform.rotation.eulerAngles.z);
+                    transform.rotation = euler;
+
+                    yield return new WaitForEndOfFrame();   
+                }
 
                 projectile.SetActive(true);
 
