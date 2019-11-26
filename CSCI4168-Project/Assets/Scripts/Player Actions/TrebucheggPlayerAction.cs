@@ -1,12 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TrebucheggPlayerAction : PlayerActionDraggable
 {
+    public Text countText;
+    public Text costText;
+
+    public int numAvailable = 3;
+    public int cost = 3;
+
     public GameObject trebucheggPrefab;
 
     private Vector3 dropPosition;
+
+    private new void Start()
+    {
+        base.Start();
+        countText.text = numAvailable.ToString();
+        costText.text = cost.ToString();
+    }
 
     protected override void OnDrop()
     {
@@ -28,8 +42,29 @@ public class TrebucheggPlayerAction : PlayerActionDraggable
 
         if (other.tag == "Defense Placement")
         {
-            GameObject trebuchegg = Instantiate(trebucheggPrefab, other);
-            trebuchegg.transform.rotation = Quaternion.Euler(90, 0, 0);
+            if (numAvailable > 0)
+            {
+                GameObject trebuchegg = Instantiate(trebucheggPrefab, other);
+                trebuchegg.transform.rotation = Quaternion.Euler(90, 0, 0);
+                numAvailable--;
+                countText.text = numAvailable.ToString();
+            }
         }
+    }
+
+    protected override void OnRightClick()
+    {
+        if (GameManager.gameManager.SpendCoins(cost))
+        {
+            AddAvailable(1);
+        }
+
+        base.OnRightClick();
+    }
+
+    public void AddAvailable(int num)
+    {
+        numAvailable += num;
+        countText.text = numAvailable.ToString();
     }
 }

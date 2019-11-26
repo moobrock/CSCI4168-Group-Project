@@ -2,12 +2,27 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class FlowerPotPlayerAction : PlayerActionDraggable
 {
+    public Text countText;
+    public Text costText;
+
+    public int numAvailable = 3;
+
+    public int cost = 1;
+
     public GameObject brokenPotPrefab;
 
     private float range = 10.0f;
+
+    private new void Start()
+    {
+        base.Start();
+        countText.text = numAvailable.ToString();
+        costText.text = cost.ToString();
+    }
 
     private bool CheckPoint(Vector3 center, float range, out Vector3 result)
     {
@@ -37,7 +52,13 @@ public class FlowerPotPlayerAction : PlayerActionDraggable
         {
             Debug.Log("Point on navmesh found");
 
-            GameObject.Instantiate(brokenPotPrefab, outPoint, Quaternion.Euler(90, 0 ,0));
+            if (numAvailable > 0)
+            {
+                GameObject.Instantiate(brokenPotPrefab, outPoint, Quaternion.Euler(90, 0, 0));
+                numAvailable--;
+
+                countText.text = numAvailable.ToString();
+            }
         }
 
         else
@@ -46,5 +67,21 @@ public class FlowerPotPlayerAction : PlayerActionDraggable
         }
 
         base.OnDrop();
+    }
+
+    protected override void OnRightClick()
+    {
+        if (GameManager.gameManager.SpendCoins(cost))
+        {
+            AddAvailable(1);
+        }
+
+        base.OnRightClick();
+    }
+
+    public void AddAvailable(int num)
+    {
+        numAvailable += num;
+        countText.text = numAvailable.ToString();
     }
 }

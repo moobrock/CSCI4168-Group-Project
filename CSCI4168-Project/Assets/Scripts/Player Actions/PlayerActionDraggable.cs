@@ -18,6 +18,7 @@ public class PlayerActionDraggable : MonoBehaviour
 
     protected virtual void Update()
     {
+        // left click to start drag
         if (Input.GetMouseButtonDown(0))
         {
             if (rectTransform.rect.Contains(rectTransform.InverseTransformPoint(Input.mousePosition)))
@@ -26,6 +27,21 @@ public class PlayerActionDraggable : MonoBehaviour
                 StartDrag();
             }
         }
+
+        // right click to buy
+        else if (Input.GetMouseButtonDown(1))
+        {
+            if (rectTransform.rect.Contains(rectTransform.InverseTransformPoint(Input.mousePosition)))
+            {
+                OnRightClick();
+            }
+        }
+    }
+
+    protected virtual void OnRightClick()
+    {
+        // override this to take action on right click 
+        Debug.Log("Player action right clicked!");
     }
 
     protected virtual void StartDrag()
@@ -45,6 +61,7 @@ public class PlayerActionDraggable : MonoBehaviour
 
         OnDrop();
     }
+    
 
     protected virtual void OnDrop()
     {

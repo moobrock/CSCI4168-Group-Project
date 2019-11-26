@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TrebucheggController : MonoBehaviour
 {
+    public int numAvailable = 3;
+
     private float fireRate = 1.6f;
     private float force = 3f;
 
@@ -74,7 +76,6 @@ public class TrebucheggController : MonoBehaviour
         {
             if (targettedEnemy != null && targettedEnemy.GetTransform() != null)
             {
-               
                 GameObject projectile = Instantiate(trebucheggPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity); // TODO: rotate projectile towards enemy
                 projectile.transform.LookAt(transform.position + shootDirection);
 

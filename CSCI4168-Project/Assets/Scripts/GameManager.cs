@@ -6,12 +6,14 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    public Text playerCoinText;
+    private int playerCoins = 0;
+
     private Button startGameButton;
 
     public static int roundIndex = 1;           // first round index is at 1
 
     public Transform barnAttackPosition;
-
     public Transform[] enemySpawns;
     public GameObject groundEnemyPrefab;
     public GameObject ufoEnemyPrefab;
@@ -205,6 +207,8 @@ public class GameManager : MonoBehaviour
             // find spawn and barn positions under the levelBase object
             if (levelBase != null)
             {
+                playerCoinText = levelBase.Find("UI")?.Find("Coin Text")?.GetComponent<Text>();
+
                 roundTimerText = levelBase.Find("UI")?.Find("Round Timer")?.GetComponent<Text>();
                 roundTimerText.text = (int)(roundTime) / 60 + ":" + ((int)roundTime % 60);
 
@@ -244,5 +248,24 @@ public class GameManager : MonoBehaviour
         if (barnAttackPosition == null)
             FindReferences();
         return barnAttackPosition;
+    }
+
+    public bool SpendCoins(int num)
+    {
+        if (playerCoins >= num)
+        {
+            playerCoins -= num;
+            playerCoinText.text = playerCoins.ToString();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public void AddCoins(int num)
+    {
+        playerCoins += num;
+        playerCoinText.text = playerCoins.ToString();
     }
 }

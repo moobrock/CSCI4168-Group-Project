@@ -203,6 +203,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthController: {fileID: 5176842010185270641}
+  coinPrefab: {fileID: 8809203469102417168, guid: b46b1d0284a90ee47bc0a49c47e47a47,
+    type: 3}
+  baseCoinDrop: 5
+  coinDropVariance: 2
 --- !u!136 &2266050440292577332
 CapsuleCollider:
   m_ObjectHideFlags: 0

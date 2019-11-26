@@ -6,6 +6,10 @@ public class UFOController : MonoBehaviour, EnemyController
 {
     public HealthController healthController;
 
+    public GameObject coinPrefab;
+    public int baseCoinDrop = 5;
+    public int coinDropVariance = 2;
+
     private Rect boundaryRect;
 
     private Vector3 targetPosition;
@@ -158,6 +162,14 @@ public class UFOController : MonoBehaviour, EnemyController
         {
             // kill enemy
             GameManager.gameManager.LogKill();
+
+            // drop coins
+            int num = baseCoinDrop + (int)Random.Range(baseCoinDrop - coinDropVariance, baseCoinDrop + coinDropVariance);
+
+            for (int i = 0; i < num; i++)
+            {
+                Instantiate(coinPrefab, transform.position, Quaternion.Euler(90, 0, 0));
+            }
 
             Destroy(this.gameObject);
         }

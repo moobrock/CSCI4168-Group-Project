@@ -7,6 +7,10 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
 {
     public HealthController healthController;
 
+    public GameObject coinPrefab;
+    public int baseCoinDrop = 2;
+    public int coinDropVariance = 1;
+
     private NavMeshAgent navMeshAgent;
     private Vector3 destination;
 
@@ -87,7 +91,7 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
 
     private IEnumerator ApproachTower()
     {
-        while (attackTarget != null)
+        while (attackTarget != null && attackTarget.GetAttackPosition() != null)
         {
             Debug.Log("Approaching");
 
@@ -154,6 +158,14 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
         {
             // kill enemy
             GameManager.gameManager.LogKill();
+
+            // drop coins
+            int num = baseCoinDrop + (int)Random.Range(baseCoinDrop - coinDropVariance, baseCoinDrop + coinDropVariance);
+
+            for (int i = 0; i < num; i++)
+            {
+                Instantiate(coinPrefab, transform.position, Quaternion.Euler(90, 0, 0));
+            }
 
             Destroy(this.gameObject);
         }

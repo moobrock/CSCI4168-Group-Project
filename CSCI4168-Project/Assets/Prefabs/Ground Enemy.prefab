@@ -110,6 +110,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthController: {fileID: 494061912837423645}
+  coinPrefab: {fileID: 8809203469102417168, guid: b46b1d0284a90ee47bc0a49c47e47a47,
+    type: 3}
+  baseCoinDrop: 2
+  coinDropVariance: 1
 --- !u!195 &4480620268913781027
 NavMeshAgent:
   m_ObjectHideFlags: 0
