@@ -48,6 +48,6 @@ public class TowerController : MonoBehaviour
         if (tag == "Barn")
             GameManager.gameManager.EndRound();
 
-        Destroy(gameObject);
+        Destroy(this.gameObject);
     }
 }

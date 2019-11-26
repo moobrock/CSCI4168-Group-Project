@@ -11,11 +11,11 @@ public class FlowerPotController : MonoBehaviour
 
     private float timeToLive = 25f;     // maximum lifetime of the object, if not destroyed
 
-    private List<GroundEnemyController> affectedEnemies;
+    private List<EnemyController> affectedEnemies;
 
     private void Start()
     {
-        affectedEnemies = new List<GroundEnemyController>();
+        affectedEnemies = new List<EnemyController>();
 
         StartCoroutine(CountDown());
     }
@@ -31,7 +31,7 @@ public class FlowerPotController : MonoBehaviour
 
         foreach (EnemyController enemy in affectedEnemies)
         {
-            (enemy as GroundEnemyController)?.ResetSpeed();
+            enemy?.ResetSpeed();
         }
 
         Destroy(this.gameObject);
@@ -53,7 +53,7 @@ public class FlowerPotController : MonoBehaviour
         {
             Debug.Log("Enemy entered broken flower pot");
 
-            GroundEnemyController enemy = other.GetComponent<GroundEnemyController>();
+            EnemyController enemy = other.GetComponent<EnemyController>();
             if (enemy != null)
             {
                 affectedEnemies.Add(enemy);
@@ -66,7 +66,7 @@ public class FlowerPotController : MonoBehaviour
     {
         if (other.tag == "Enemy")
         {
-            other.GetComponent<GroundEnemyController>()?.Damage(damage);
+            other.GetComponent<EnemyController>()?.Damage(damage);
 
             Damage(damage);
         }
@@ -78,7 +78,7 @@ public class FlowerPotController : MonoBehaviour
         {
             Debug.Log("Enemy exited broken flower pot");
 
-            GroundEnemyController enemy = other.GetComponent<GroundEnemyController>();
+            EnemyController enemy = other.GetComponent<EnemyController>();
             if (enemy != null)
             {
                 affectedEnemies.Remove(enemy);
