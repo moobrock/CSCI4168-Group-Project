@@ -10,7 +10,7 @@ public class GreneggPlayerAction : PlayerActionDraggable
 
     protected override void OnDrop()
     {
-        dropPosition = Camera.main.ScreenToWorldPoint(transform.position);
+        dropPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         dropPosition.y = 0;
 
         Instantiate(greneggPrefab, dropPosition, Quaternion.Euler(90, 0, 0));
