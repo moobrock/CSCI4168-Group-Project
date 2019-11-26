@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
-public class UFOController : MonoBehaviour, EnemyController
+public class EnemyController : MonoBehaviour
 {
-    private Rect boundaryRect;
+    private NavMeshAgent navMeshAgent;
+    private Vector3 destination;
 
-    private Vector3 targetPosition;
+    private float moveDist = 0.1f;
+    private float baseSpeed = 0.5f;
 
-    private float baseDamage = 0.3f;        // base damage done every attackFreqency seconds
+    private float baseDamage = 0.1f;        // base damage done every attackFreqency seconds
     private float damageModifier = 0.05f;   // slight random modifier (+/-) to damage
     private float attackFrequency = 1f;     // in seconds
     private float attackRange = 1f;         // can only attack in this range
@@ -17,52 +20,34 @@ public class UFOController : MonoBehaviour, EnemyController
 
     private TowerController attackTarget;
 
-    private float speed = 0.05f;
-
-    void Start()
+    private void Start()
     {
-        targetPosition = transform.position;
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        navMeshAgent.speed = baseSpeed;
 
-        RectTransform rt = GameObject.Find("Level Base")?.transform.Find("UI")?.Find("Camera Boundary")?.GetComponent<RectTransform>();
-
-        if (rt != null)
-        {
-            Vector3[] v = new Vector3[4];
-            rt.GetWorldCorners(v);
-
-            boundaryRect = Rect.MinMaxRect(v[0].x, v[0].z, v[2].x, v[2].z);
-
-            FindTargetPosition();
-        }
-
-        else
-        {
-            Destroy(this.gameObject);
-        }
+        SetDestination();
     }
 
-    void Update()
+    private void Update()
     {
-        if ((targetPosition - transform.position).magnitude < 0.1f)
-        {
-            FindTargetPosition();
-        }
-
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed);
-        transform.LookAt(targetPosition);
+        // keep rotation
+        transform.rotation = Quaternion.identity;
     }
 
-    private void FindTargetPosition()
+    private void SetDestination()
     {
-        // find new target position
-        if (boundaryRect != null)
-        {
-            float x = Random.Range(boundaryRect.xMin, boundaryRect.xMax);
-            float z = Random.Range(boundaryRect.yMin, boundaryRect.yMax);
-            targetPosition = new Vector3(x, 0, z);
+        if (GameManager.gameManager.barnAttackPosition == null)
+            GameManager.gameManager.FindBarn();
 
-            Debug.Log("Target position: " + targetPosition);
-        }
+        destination = GameManager.gameManager.barnAttackPosition.position;
+
+        SetDestination(destination);
+    }
+
+    private void SetDestination(Vector3 position)
+    {
+        destination = position;
+        navMeshAgent.SetDestination(position);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -84,7 +69,7 @@ public class UFOController : MonoBehaviour, EnemyController
                 // go to attack position if on the same path (navmesh agent path distance is short)
                 if (pathDistance <= TowerController.attackRadius * 2f)
                 {
-                    targetPosition= attackPosition.position;
+                    SetDestination(attackPosition.position);
 
                     attackTarget = tower;
 
@@ -122,7 +107,7 @@ public class UFOController : MonoBehaviour, EnemyController
 
     private IEnumerator AttackTower()
     {
-        Debug.Log("Attack target " + attackTarget.name + ", health: " + attackTarget.GetHealth());
+        Debug.Log("Attack target " + attackTarget.name + ", health: " + attackTarget.GetHealth() );
 
         while (attackTarget != null && attackTarget.GetHealth() > 0f)
         {
@@ -143,6 +128,19 @@ public class UFOController : MonoBehaviour, EnemyController
 
             yield return new WaitForSecondsRealtime(attackFrequency);
         }
+
+        SetDestination();
+    }
+
+    public void ModifySpeed(float speedModifier)
+    {
+        navMeshAgent.speed = baseSpeed * speedModifier;
+    }
+
+    public void ResetSpeed()
+    {
+        if (navMeshAgent != null)
+            navMeshAgent.speed = baseSpeed;
     }
 
     public void Damage(float damage)
@@ -154,15 +152,7 @@ public class UFOController : MonoBehaviour, EnemyController
         if (health <= 0f)
         {
             // kill enemy
-            GameManager.gameManager.LogKill();
-
             Destroy(this.gameObject);
         }
-    }
-
-    //returns child transform (UFO model) or this transform if not found
-    public Transform GetTransform()
-    {
-        return transform?.GetChild(0)?.transform ?? transform;
     }
 }

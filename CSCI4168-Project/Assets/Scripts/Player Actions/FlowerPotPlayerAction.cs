@@ -27,7 +27,7 @@ public class FlowerPotPlayerAction : PlayerActionDraggable
     
     protected override void OnDrop()
     {
-        Vector3 inPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        Vector3 inPoint = Camera.main.ScreenToWorldPoint(transform.position);
         inPoint.y = 0;
         Vector3 outPoint;
 

@@ -28,8 +28,7 @@ public class TrebucheggPlayerAction : PlayerActionDraggable
 
         if (other.tag == "Defense Placement")
         {
-            GameObject trebuchegg = Instantiate(trebucheggPrefab, other);
-            trebuchegg.transform.rotation = Quaternion.Euler(90, 0, 0);
+            Instantiate(trebucheggPrefab, other.transform.position, Quaternion.Euler(90, 0, 0));
         }
     }
 }

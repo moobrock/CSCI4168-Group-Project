@@ -4,66 +4,21 @@ using UnityEngine;
 
 public class TrebucheggController : MonoBehaviour
 {
-    private float fireRate = 1.6f;
-    private float force = 3f;
+    private float fireRate = 0.6f;
+    private float force = 5f;
+
+    private float timeToLive = 5f;     // time to live, in seconds. (GameObject is destroyed after this much time)
+    private float time = 0f;
 
     public GameObject trebucheggPrefab;
 
-    public EnemyController targettedEnemy;
     public Vector3 shootDirection;
-
-    private SpriteRenderer radiusSpriteRenderer;
-
-    private float alpha;
-    private float lerp;
-    private float diff = 0.05f;
-
-    private IEnumerator FadeRadius()
-    {
-        while (true)
-        {
-            lerp += diff;
-
-            if (lerp > 1)
-            {
-                lerp = 1f;
-                diff = -0.05f;
-            }
-
-            if (lerp < 0)
-            {
-                lerp = 0f;
-                diff = 0.05f;
-            }
-
-            alpha = Mathf.Lerp(0.1f, 0.5f, lerp);
-
-            radiusSpriteRenderer.color = new Color(radiusSpriteRenderer.color.r,
-                                                   radiusSpriteRenderer.color.g,
-                                                   radiusSpriteRenderer.color.b,
-                                                   alpha);
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
 
     private void Start()
     {
         shootDirection = -transform.up;
 
-        radiusSpriteRenderer = gameObject.transform.Find("Sprite").GetComponent<SpriteRenderer>();
-
-        if (radiusSpriteRenderer != null)
-        {
-            StartCoroutine(FadeRadius());
-        }
-
         StartCoroutine(FireBullets());
-    }
-
-    private void FixedUpdate()
-    {
-        shootDirection = (targettedEnemy?.GetTransform() != null) ? -(transform.position - targettedEnemy.GetTransform().position) : -transform.up;
     }
 
     // fires towards last seen enemy every fireRate seconds
@@ -71,47 +26,21 @@ public class TrebucheggController : MonoBehaviour
     {
         while (true)
         {
-            if (targettedEnemy != null && targettedEnemy.GetTransform() != null)
+            Ray ray = new Ray(transform.position, transform.position + transform.forward);
+            RaycastHit hit;
+            Physics.SphereCast(ray, 5f, out hit);   // TODO: use layermask to only collide with enemies
+
+            if (hit.transform?.tag == "Enemy")
             {
-                GameObject projectile = Instantiate(trebucheggPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity); // TODO: rotate projectile towards enemy
-                projectile.transform.LookAt(transform.position + shootDirection);
-
-                Quaternion euler = Quaternion.Euler(90, projectile.transform.rotation.eulerAngles.y, projectile.transform.rotation.eulerAngles.z);
-                projectile.transform.rotation = euler;
-
-                euler = Quaternion.Euler(-90, projectile.transform.rotation.eulerAngles.y, projectile.transform.rotation.eulerAngles.z);
-                transform.rotation = euler;
-
-                projectile.GetComponent<Rigidbody>()?.AddForce(shootDirection * force, ForceMode.Impulse);
-
-                projectile.GetComponent<TrebucheggProjectile>()?.SetTarget(targettedEnemy.GetTransform());
+                shootDirection = hit.transform.position - transform.position;
+                shootDirection.y = 0;
             }
 
+            GameObject projectile = Instantiate(trebucheggPrefab, transform.position, Quaternion.identity); // TODO: rotate projectile towards enemy
+            projectile.transform.LookAt(transform.position + shootDirection);
+            projectile.GetComponent<Rigidbody>()?.AddForce(shootDirection * force, ForceMode.Impulse);
+
             yield return new WaitForSeconds(fireRate);
-        }
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Enemy" && targettedEnemy == null)
-        {
-            targettedEnemy = other.GetComponent<EnemyController>() ?? other.GetComponentInChildren<EnemyController>();
-        }
-    }
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.tag == "Enemy" && targettedEnemy == null)
-        {
-            targettedEnemy = other.GetComponent<EnemyController>() ?? other.GetComponentInChildren<EnemyController>();
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.tag == "Enemy" && targettedEnemy != null && targettedEnemy == (other.GetComponent<EnemyController>() ?? other.GetComponentInChildren<EnemyController>()))
-        {
-            targettedEnemy = null;
         }
     }
 }
