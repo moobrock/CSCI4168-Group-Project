@@ -145,7 +145,16 @@ public class GameManager : MonoBehaviour
 
         SceneManager.LoadScene("EndOfRound");
 
-        yield return new WaitForSecondsRealtime(5.0f);
+        Text timerText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Timer")?.GetComponent<Text>();
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (timerText != null)
+            {
+                timerText.text = (i + 1).ToString();
+            }
+            yield return new WaitForSecondsRealtime(1.0f);
+        }
 
         Debug.Log("Finishing end of round");
 
