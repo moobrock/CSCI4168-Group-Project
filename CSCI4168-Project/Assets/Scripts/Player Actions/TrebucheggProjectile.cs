@@ -5,7 +5,7 @@ using UnityEngine;
 public class TrebucheggProjectile : MonoBehaviour
 {
     private float damage = 0.1f;
-    private float speed = 0.05f;
+    private float speed = 0.1f;
 
     private float time;
     private float timeToLive = 10f;
@@ -27,16 +27,12 @@ public class TrebucheggProjectile : MonoBehaviour
     private void FixedUpdate()
     {
         // follow the targetted enemy, if there is one
-        if (target != null)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, target.transform.position + transform.up * 0.5f, speed);
-        }
+        Vector3 targetPosition = (target != null) ? target.transform.position + transform.up * 0.5f : transform.position + transform.up * 0.5f;
+        targetPosition.y = 0.5f;
 
-        // if the target enemy was lost or never existed, just continue forward
-        else
-        {
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.up * 0.5f, speed);
-        }
+        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed);
+        transform.LookAt(targetPosition);
+        transform.rotation = Quaternion.Euler(90, transform.rotation.eulerAngles.y, transform.rotation.eulerAngles.z);
     }
 
     /// <summary>

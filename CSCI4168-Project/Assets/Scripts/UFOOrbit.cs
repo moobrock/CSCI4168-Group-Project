@@ -4,17 +4,9 @@ using UnityEngine;
 
 public class UFOOrbit : MonoBehaviour
 {
-    Vector3 startPos;
-    Vector3 endPos;
     float lerp;
-    float diff = 0.005f;
-
-    private void Start()
-    {
-        startPos = transform.position + Vector3.left;
-        endPos = transform.position + Vector3.right;
-    }
-
+    float diff = 0.05f;
+    
     void FixedUpdate()
     {
         lerp += diff;
@@ -22,15 +14,15 @@ public class UFOOrbit : MonoBehaviour
         if (lerp > 1)
         {
             lerp = 1f;
-            diff = -0.1f;
+            diff = -diff;
         }
 
         if (lerp < 0)
         {
             lerp = 0f;
-            diff = 0.1f;
+            diff = -diff;
         }
 
-        transform.position = Vector3.Lerp(startPos, endPos, lerp);
+        transform.position = Vector3.Lerp(transform.parent.position - transform.parent.right, transform.parent.position + transform.parent.right, lerp);
     }
 }

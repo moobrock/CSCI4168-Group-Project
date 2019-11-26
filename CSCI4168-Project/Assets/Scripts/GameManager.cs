@@ -6,18 +6,21 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    public static int roundIndex = 1;       // first round index is at 1
+    private Button startGameButton;
+
+    public static int roundIndex = 1;           // first round index is at 1
 
     public Transform barnAttackPosition;
 
     public Transform[] enemySpawns;
-    public GameObject enemyPrefab;
+    public GameObject groundEnemyPrefab;
+    public GameObject ufoEnemyPrefab;
 
     private int enemySpawnIndex = 0;
 
-    private float nextEnemySpawnTime = 0f;  // time until next enemy is spawned (enemy spawn rate + random variance) 
-    private float enemySpawnRate = 8f;      // in seconds
-    private float enemySpawnVariance = 1f;  // in seconds
+    private float nextEnemySpawnTime = 0f;      // time until next enemy is spawned (enemy spawn rate + random variance) 
+    private float enemySpawnRate = 10f;         // in seconds
+    private float enemySpawnVariance = 5f;      // in seconds
 
     private float startTime = 0f;
     private float roundTime = 5 * 60f;
@@ -37,21 +40,66 @@ public class GameManager : MonoBehaviour
         else
         {
             gameManager = this;
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(gameObject);
+
+            //StartCoroutine(StartGame());
+
+            startTime = Time.realtimeSinceStartup;
             FindReferences();
+            StartCoroutine(ShowTimer());
         }
 
         startTime = Time.realtimeSinceStartup;
+
+        FindReferences();
     }
 
-    private void Update()
+    private IEnumerator StartGame()
     {
-       if (Time.realtimeSinceStartup > startTime + roundTime)
-        {
-            EndRound();
-        }
+        roundIndex = 0;
+
+        SceneManager.LoadScene("FrontEnd");
+
+        yield return new WaitForEndOfFrame();
+
+        FindReferences();
     }
 
+    // return index between 0 and second last scene index
+    private int GetNextLevelIndex()
+    {
+        return (SceneManager.GetActiveScene().buildIndex + 1) % (SceneManager.sceneCountInBuildSettings - 1);
+    }
+
+    public void StartRoundCoroutine()
+    {
+        roundIndex = GetNextLevelIndex();
+
+        StartCoroutine(StartRound());
+    }
+
+    private IEnumerator StartRound()
+    {
+        StopAllCoroutines();
+
+        startTime = Time.realtimeSinceStartup;
+
+        SceneManager.LoadScene(roundIndex);
+
+        yield return new WaitForEndOfFrame();
+
+        FindReferences();
+
+        StartCoroutine(ShowTimer());
+    }
+
+    public void EndRound()
+    {
+        StopAllCoroutines();
+
+        StartCoroutine(LoadEndOfRoundScene());
+    }
+    
     private IEnumerator SpawnEnemies()
     {
         float time = 0f;
@@ -64,7 +112,23 @@ public class GameManager : MonoBehaviour
             {
                 enemySpawnIndex = (enemySpawnIndex + 1) % enemySpawns.Length;
 
-                GameObject enemy = GameObject.Instantiate(enemyPrefab, enemySpawns[enemySpawnIndex].position, Quaternion.identity);
+                if (enemySpawns[enemySpawnIndex] != null)
+
+                {
+                    GameObject enemy;
+
+                    // spawn ground units 90% of the time
+                    if (Random.value > 0.9f)
+                    {
+                        enemy = GameObject.Instantiate(ufoEnemyPrefab, enemySpawns[enemySpawnIndex].position, Quaternion.identity);
+                    }
+
+                    // spawn ufo units 10% of the time
+                    else
+                    {
+                        enemy = GameObject.Instantiate(groundEnemyPrefab, enemySpawns[enemySpawnIndex].position, Quaternion.identity);
+                    }
+                }
 
                 time = 0f;
 
@@ -75,86 +139,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void StartGame()
+    private IEnumerator LoadEndOfRoundScene()
     {
-        StopAllCoroutines();
+        int index = GetNextLevelIndex();        // save index of next level
 
-        roundIndex = 1;
-        killCounter = 0;
-
-        StartCoroutine(LoadScene());
-    }
-
-    public void EndRound()
-    {
-        StopAllCoroutines();
-
-        enemySpawns = null;
-        barnAttackPosition = null;
-
-        roundIndex = SceneManager.GetActiveScene().buildIndex + 1;
-
-        Debug.Log("End of round - changing scene." + 
-                  "\n\tScene index: " + roundIndex + 
-                  "\n\tScene count: " + SceneManager.sceneCountInBuildSettings +
-                  "\n\tOld scene: " + SceneManager.GetActiveScene().name + 
-                  ((SceneManager.sceneCount > roundIndex) ? 
-                  ("\n\tNext scene: " + SceneManager.GetSceneAt(roundIndex)) : ""));
-
-        if (roundIndex >= 0 && roundIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            killCounter = 0;
-            // load next round
-            StartCoroutine(LoadScene());
-        }
-
-        else
-        {
-            roundIndex = 0;
-
-            SceneManager.LoadScene(roundIndex);
-        }
-    }
-
-    public void EndGame()
-    {
-        enemySpawns = null;
-        barnAttackPosition = null;
-
-        // load front end
-        SceneManager.LoadScene(0);
-    }
-
-    public Transform FindBarn()
-    {
-        if (barnAttackPosition == null)
-            barnAttackPosition = GameObject.Find("Level Base")?.transform.Find("Barn")?.transform.GetChild(0);
-
-        return barnAttackPosition;
-    }
-
-    private IEnumerator LoadScene()
-    {
-        AsyncOperation op = SceneManager.LoadSceneAsync("EndOfRound");
-
-        while (!op.isDone)
-        {
-            yield return new WaitForEndOfFrame();
-        }
+        SceneManager.LoadScene("EndOfRound");
 
         yield return new WaitForSecondsRealtime(5.0f);
 
-        op = SceneManager.LoadSceneAsync(roundIndex);
+        Debug.Log("Finishing end of round");
 
-        while (!op.isDone)
-        {
-            yield return new WaitForEndOfFrame();
-        }
+        roundIndex = index;                     // go to next level
+        StartCoroutine(StartRound());
+    }
 
-        FindReferences();
-
+    private IEnumerator ShowTimer()
+    {
         float time = 0f;
-        
 
         while (time < roundTime)
         {
@@ -162,7 +163,7 @@ public class GameManager : MonoBehaviour
 
             if (roundTimerText != null)
             {
-                roundTimerText.text = (int)(roundTime) / 60 + ":" + ((int)roundTime % 60);
+                roundTimerText.text = (int)(roundTime - time) / 60 + ":" + ((int)(roundTime - time) % 60);
             }
 
             yield return new WaitForEndOfFrame();
@@ -175,37 +176,55 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("Finding scene references in scene " + SceneManager.GetActiveScene().name);
 
-        Transform levelBase = GameObject.Find("Level Base")?.transform;
-        // find spawn and barn positions under the levelBase object
-        if (levelBase != null)
+        // front end
+        if (SceneManager.GetActiveScene().buildIndex == 0 && startGameButton == null)
         {
-            roundTimerText = levelBase.Find("UI")?.Find("Round Timer")?.GetComponent<Text>();
+            startGameButton = GameObject.Find("Canvas")?.transform.Find("Button")?.GetComponent<Button>();
+            startGameButton?.onClick.AddListener(StartRoundCoroutine);
+        }
 
-            barnAttackPosition = levelBase.Find("Barn")?.transform.GetChild(0);
-
-            int count = levelBase.Find("Enemy Spawns")?.childCount ?? 0;
-            enemySpawns = new Transform[count];
-
-            for (int i = 0; i < count; i++)
+        else
+        {
+            Transform levelBase = GameObject.Find("Level Base")?.transform;
+            // find spawn and barn positions under the levelBase object
+            if (levelBase != null)
             {
-                enemySpawns[i] = levelBase.Find("Enemy Spawns")?.GetChild(i).transform;
+                roundTimerText = levelBase.Find("UI")?.Find("Round Timer")?.GetComponent<Text>();
+                roundTimerText.text = (int)(roundTime) / 60 + ":" + ((int)roundTime % 60);
+
+                barnAttackPosition = levelBase.Find("Barn")?.transform.GetChild(0);
+
+                int count = levelBase.Find("Enemy Spawns")?.childCount ?? 0;
+                enemySpawns = new Transform[count];
+
+                for (int i = 0; i < count; i++)
+                {
+                    enemySpawns[i] = levelBase.Find("Enemy Spawns")?.GetChild(i).transform;
+                }
+
+                // found the positions, start spawning enemies
+                if (enemySpawns != null && enemySpawns.Length > 0 && barnAttackPosition != null)
+                {
+                    StopAllCoroutines();
+                    StartCoroutine(SpawnEnemies());
+                }
+
+                // positions should be found unless it is the front end
+                else
+                    Debug.LogWarning("No enemy spawn or barn attack position - is this the front end?");
             }
         }
-
-        // found the positions, start spawning enemies
-        if (enemySpawns != null && enemySpawns.Length > 0 && barnAttackPosition != null)
-        {
-            StopAllCoroutines();
-            StartCoroutine(SpawnEnemies());
-        }
-
-        // positions should be found unless it is the front end
-        else
-            Debug.LogWarning("No enemy spawn or barn attack position - is this the front end?");
     }
 
     public void LogKill()
     {
         killCounter++;
+    }
+
+    public Transform FindBarn()
+    {
+        if (barnAttackPosition == null)
+            FindReferences();
+        return barnAttackPosition;
     }
 }

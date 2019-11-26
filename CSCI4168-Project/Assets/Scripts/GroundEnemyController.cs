@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyController : MonoBehaviour
+public class GroundEnemyController : MonoBehaviour, EnemyController
 {
     private NavMeshAgent navMeshAgent;
     private Vector3 destination;
 
-    private float moveDist = 0.1f;
-    private float baseSpeed = 0.5f;
+    private float baseSpeed = 3f;
 
-    private float baseDamage = 0.1f;        // base damage done every attackFreqency seconds
+    private float baseDamage = 0.3f;        // base damage done every attackFreqency seconds
     private float damageModifier = 0.05f;   // slight random modifier (+/-) to damage
     private float attackFrequency = 1f;     // in seconds
     private float attackRange = 1f;         // can only attack in this range
@@ -28,10 +27,9 @@ public class EnemyController : MonoBehaviour
         SetDestination();
     }
 
-    private void Update()
+    public Transform GetTransform()
     {
-        // keep rotation
-        transform.rotation = Quaternion.identity;
+        return transform;
     }
 
     private void SetDestination()
