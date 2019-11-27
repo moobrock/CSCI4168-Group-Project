@@ -14,17 +14,16 @@ public class UFOController : MonoBehaviour, EnemyController
 
     private Vector3 targetPosition;
 
-    private float baseDamage = 0.3f;        // base damage done every attackFreqency seconds
-    private float damageModifier = 0.05f;   // slight random modifier (+/-) to damage
-    private float attackFrequency = 1f;     // in seconds
-    private float attackRange = 1f;         // can only attack in this range
+    private float attackRange = 1f;         // can only attack if in this range
 
     private float health = 1f;
     private float maxHealth = 1f;
 
-    private TowerController attackTarget;
+    private BarnController attackTarget;
 
     private float speed = 0.05f;
+
+    private int cowsAbducted;
 
     void Start()
     {
@@ -50,13 +49,16 @@ public class UFOController : MonoBehaviour, EnemyController
 
     void Update()
     {
-        if ((targetPosition - transform.position).magnitude < 0.1f)
+        if (cowsAbducted == 0)
         {
-            FindTargetPosition();
-        }
+            if ((targetPosition - transform.position).magnitude < 0.1f)
+            {
+                FindTargetPosition();
+            }
 
-        transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed);
-        transform.LookAt(targetPosition);
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed);
+            transform.LookAt(targetPosition);
+        }
     }
 
     private void FindTargetPosition()
@@ -74,29 +76,20 @@ public class UFOController : MonoBehaviour, EnemyController
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger enter - " + other.name);
-
-        if (other.tag == "Tower" || other.tag == "Barn")
+        if (other.tag == "Barn" && cowsAbducted == 0)
         {
             // get tower attack position
-            TowerController tower = other.GetComponent<TowerController>();
+            BarnController barn = other.GetComponent<BarnController>();
 
-            if (tower != null)
+            if (barn != null)
             {
-                Transform attackPosition = tower.GetAttackPosition();
+                Transform attackPosition = barn.GetAttackPosition();
 
-                // TODO: use navmesh agent to check path distance (to make sure the tower isn't on another nearby path)
-                float pathDistance = TowerController.attackRadius;
+                targetPosition= attackPosition.position;
 
-                // go to attack position if on the same path (navmesh agent path distance is short)
-                if (pathDistance <= TowerController.attackRadius * 2f)
-                {
-                    targetPosition= attackPosition.position;
+                attackTarget = barn;
 
-                    attackTarget = tower;
-
-                    StartCoroutine(ApproachTower());
-                }
+                StartCoroutine(ApproachTower());
             }
 
             else
@@ -118,7 +111,7 @@ public class UFOController : MonoBehaviour, EnemyController
             // start attacking and exit coroutine
             if (distance <= attackRange)
             {
-                StartCoroutine(AttackTower());
+                AttackTower();
 
                 yield break;
             }
@@ -127,29 +120,34 @@ public class UFOController : MonoBehaviour, EnemyController
         }
     }
 
-    private IEnumerator AttackTower()
+    private void AttackTower()
     {
-        Debug.Log("Attack target " + attackTarget.name + ", health: " + attackTarget.GetHealth());
+        float damageDone = attackTarget.AbductCow();
 
-        while (attackTarget != null && attackTarget.GetHealth() > 0f)
+        Debug.Log("Abducting cow " + attackTarget.tag + " for " + damageDone + " damage. Tower health = " + attackTarget.GetHealth());
+
+        if (damageDone <= 0f)
         {
-            float damage = baseDamage + Random.Range(-damageModifier, damageModifier);
+            cowsAbducted++;
 
-            bool success = attackTarget.Attack(damage);
-
-            Debug.Log("Attacking " + attackTarget.tag + " for " + damage + " damage. Tower health = " + attackTarget.GetHealth());
-
-            // enemy is or was dead
-            // stop attacking and exit coroutine
-            if (!success)
-            {
-                attackTarget = null;
-
-                yield break;
-            }
-
-            yield return new WaitForSecondsRealtime(attackFrequency);
+            StopAllCoroutines();
+            StartCoroutine(Leave());
         }
+    }
+
+    private IEnumerator Leave()
+    {
+        Transform target = GameManager.gameManager.GetNearestSpawn();
+        targetPosition = target.position;
+
+        while ((transform.position - targetPosition).sqrMagnitude > 9f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, target.position, speed);
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        Destroy(gameObject);
     }
 
     public void Damage(float damage)
@@ -171,6 +169,10 @@ public class UFOController : MonoBehaviour, EnemyController
                 Instantiate(coinPrefab, transform.position, Quaternion.Euler(90, 0, 0));
             }
 
+            // return cows if any were abducted
+            if (cowsAbducted > 0 && attackTarget != null)
+                attackTarget.ReturnCows(cowsAbducted);
+
             Destroy(this.gameObject);
         }
 
@@ -180,6 +182,14 @@ public class UFOController : MonoBehaviour, EnemyController
     //returns child transform (UFO model) or this transform if not found
     public Transform GetTransform()
     {
-        return transform?.GetChild(0)?.transform ?? transform;
+        try
+        {
+            return transform?.GetChild(0)?.transform ?? transform;
+        }
+
+        catch (MissingReferenceException e)
+        {
+            return null;
+        }
     }
 }

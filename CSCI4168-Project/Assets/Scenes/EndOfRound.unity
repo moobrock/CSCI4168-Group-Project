@@ -1008,11 +1008,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d358bc13b0b49c409c70297e62fa02d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCoinText: {fileID: 0}
   barnAttackPosition: {fileID: 0}
   enemySpawns: []
   groundEnemyPrefab: {fileID: 0}
   ufoEnemyPrefab: {fileID: 0}
-  roundTimerText: {fileID: 475806821}
+  roundTimerText: {fileID: 0}
 --- !u!4 &1899252651
 Transform:
   m_ObjectHideFlags: 0

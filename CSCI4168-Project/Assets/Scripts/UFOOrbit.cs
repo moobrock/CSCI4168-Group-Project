@@ -6,7 +6,12 @@ public class UFOOrbit : MonoBehaviour
 {
     float lerp;
     float diff = 0.05f;
-    
+
+    int flipRotationTime = 1;
+    bool flipRotationTrigger;
+
+    Vector3 position;
+
     void FixedUpdate()
     {
         lerp += diff;
@@ -23,6 +28,27 @@ public class UFOOrbit : MonoBehaviour
             diff = -diff;
         }
 
-        transform.position = Vector3.Lerp(transform.parent.position - transform.parent.right, transform.parent.position + transform.parent.right, lerp);
+        position = Vector3.Slerp(transform.parent.position - transform.parent.right, transform.parent.position + transform.parent.right, lerp);
+        position.y = 3;
+
+        transform.position = position;
+
+        if ((int)Time.realtimeSinceStartup % flipRotationTime == 0)
+            FlipRotation();
+    }
+
+    void FlipRotation ()
+    {
+        if (flipRotationTrigger)
+        {
+            transform.rotation = Quaternion.Euler(90, 0, 0);
+        }
+
+        else
+        {
+            transform.rotation = Quaternion.Euler(90, 0, 90);
+        }
+
+        flipRotationTrigger = !flipRotationTrigger;
     }
 }

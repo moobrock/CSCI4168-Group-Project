@@ -21,11 +21,11 @@ public class GameManager : MonoBehaviour
     private int enemySpawnIndex = 0;
 
     private float nextEnemySpawnTime = 0f;      // time until next enemy is spawned (enemy spawn rate + random variance) 
-    private float enemySpawnRate = 10f;         // in seconds
-    private float enemySpawnVariance = 5f;      // in seconds
+    private float enemySpawnRate = 14f;         // in seconds
+    private float enemySpawnVariance = 3f;      // in seconds
 
     private float startTime = 0f;
-    private float roundTime = 5 * 60f;
+    private float roundTime = 3 * 60f;
     public Text roundTimerText;
 
     private int killCounter = 0;
@@ -43,17 +43,11 @@ public class GameManager : MonoBehaviour
         {
             gameManager = this;
             DontDestroyOnLoad(gameObject);
-
-            //StartCoroutine(StartGame());
-
-            startTime = Time.realtimeSinceStartup;
-            FindReferences();
-            StartCoroutine(ShowTimer());
         }
 
-        startTime = Time.realtimeSinceStartup;
-
         FindReferences();
+        startTime = Time.realtimeSinceStartup;
+        StartCoroutine(ShowTimer());
     }
 
     private IEnumerator StartGame()
@@ -65,6 +59,17 @@ public class GameManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         FindReferences();
+    }
+
+    // TODO: get nearest
+    public Transform GetNearestSpawn()
+    {
+        if (enemySpawns == null || enemySpawns.Length == 0)
+        {
+            return null;
+        }
+
+        return enemySpawns[0];
     }
 
     // return index between 0 and second last scene index
@@ -82,10 +87,6 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartRound()
     {
-        Debug.Log("Starting Round " + (roundIndex));
-
-        StopAllCoroutines();
-
         startTime = Time.realtimeSinceStartup;
 
         SceneManager.LoadScene(roundIndex);
@@ -99,7 +100,7 @@ public class GameManager : MonoBehaviour
 
     public void EndRound()
     {
-        StopAllCoroutines();
+        //StopAllCoroutines();
 
         StartCoroutine(LoadEndOfRoundScene());
     }
@@ -148,6 +149,7 @@ public class GameManager : MonoBehaviour
         int index = GetNextLevelIndex();        // save index of next level
 
         SceneManager.LoadScene("EndOfRound");
+        yield return new WaitForEndOfFrame();
 
         Text timerText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Timer")?.GetComponent<Text>();
 
@@ -159,8 +161,6 @@ public class GameManager : MonoBehaviour
             }
             yield return new WaitForSecondsRealtime(1.0f);
         }
-
-        Debug.Log("Finishing end of round");
 
         roundIndex = index;                     // go to next level
         StartCoroutine(StartRound());
@@ -176,8 +176,6 @@ public class GameManager : MonoBehaviour
 
             if (roundTimerText != null)
             {
-                Debug.Log("Setting round timer text");
-
                 roundTimerText.text = (int)(roundTime - time) / 60 + ":" + ((int)(roundTime - time) % 60);
             }
 
@@ -189,8 +187,6 @@ public class GameManager : MonoBehaviour
 
     private void FindReferences()
     {
-        Debug.Log("Finding scene references in scene " + SceneManager.GetActiveScene().name);
-
         // front end
         if (SceneManager.GetActiveScene().buildIndex == 0 && startGameButton == null)
         {
@@ -202,8 +198,6 @@ public class GameManager : MonoBehaviour
         {
             Transform levelBase = GameObject.Find("Level Base")?.transform;
 
-            Debug.Log("Level Base found? " + (levelBase != null));
-
             // find spawn and barn positions under the levelBase object
             if (levelBase != null)
             {
@@ -211,8 +205,6 @@ public class GameManager : MonoBehaviour
 
                 roundTimerText = levelBase.Find("UI")?.Find("Round Timer")?.GetComponent<Text>();
                 roundTimerText.text = (int)(roundTime) / 60 + ":" + ((int)roundTime % 60);
-
-                Debug.Log("Round Timer found? " + (roundTimerText != null));
 
                 barnAttackPosition = levelBase.Find("Barn")?.transform.GetChild(0);
 
@@ -227,7 +219,6 @@ public class GameManager : MonoBehaviour
                 // found the positions, start spawning enemies
                 if (enemySpawns != null && enemySpawns.Length > 0 && barnAttackPosition != null)
                 {
-                    StopAllCoroutines();
                     StartCoroutine(SpawnEnemies());
                 }
 
@@ -266,6 +257,7 @@ public class GameManager : MonoBehaviour
     public void AddCoins(int num)
     {
         playerCoins += num;
-        playerCoinText.text = playerCoins.ToString();
+        if (playerCoinText != null)
+            playerCoinText.text = playerCoins.ToString();
     }
 }

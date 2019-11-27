@@ -23,12 +23,13 @@ public class TowerController : MonoBehaviour
 
     public float GetHealth() { return health; }
 
-    // true -> still alive (attack successful)
-    // false -> dead (attack unsuccessful)
-    public bool Attack(float damage)
+    // returns damage done
+    public float Attack(float damage)
     {
         if (health > 0f)
         {
+            float startHealth = health;
+
             health = Mathf.Max(0f, health - damage);
 
             if (health <= 0f)
@@ -38,12 +39,12 @@ public class TowerController : MonoBehaviour
 
             healthController.SetHealth(health / maxHealth);
 
-            return true;
+            return startHealth - health;
         }
 
         DestroyTower();
 
-        return false;
+        return 0f;
     }
 
     protected void DestroyTower()

@@ -22,7 +22,7 @@ public class HealthController : MonoBehaviour
         rotation = transform.rotation;
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
         transform.position = transform.parent?.position + offset ?? transform.position;
         transform.rotation = rotation;

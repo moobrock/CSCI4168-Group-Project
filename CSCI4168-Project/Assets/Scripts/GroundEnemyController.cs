@@ -14,15 +14,15 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
     private NavMeshAgent navMeshAgent;
     private Vector3 destination;
 
-    private float baseSpeed = 3f;
+    public float baseSpeed = 3f;
 
-    private float baseDamage = 0.3f;        // base damage done every attackFreqency seconds
-    private float damageModifier = 0.05f;   // slight random modifier (+/-) to damage
-    private float attackFrequency = 1f;     // in seconds
-    private float attackRange = 1f;         // can only attack in this range
+    public float baseDamage = 0.3f;        // base damage done every attackFreqency seconds
+    public float damageModifier = 0.05f;   // slight random modifier (+/-) to damage
+    public float attackFrequency = 1f;     // in seconds
+    public float attackRange = 1f;         // can only attack in this range
 
-    private float health = 1f;
-    private float maxHealth = 1f;
+    public float health = 1f;
+    public float maxHealth = 1f;
 
     private TowerController attackTarget;
 
@@ -31,12 +31,22 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = baseSpeed;
 
+        Physics.IgnoreLayerCollision(8, 8);
+
         SetDestination();
     }
 
     public Transform GetTransform()
     {
-        return transform;
+        try
+        {
+            return transform;
+        }
+
+        catch (MissingReferenceException e)
+        {
+            return null;
+        }
     }
 
     private void SetDestination()
@@ -93,8 +103,6 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
     {
         while (attackTarget != null && attackTarget.GetAttackPosition() != null)
         {
-            Debug.Log("Approaching");
-
             float distance = (transform.position - attackTarget.GetAttackPosition().position).magnitude;
 
             // in attack range of tower
@@ -112,19 +120,17 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
 
     private IEnumerator AttackTower()
     {
-        Debug.Log("Attack target " + attackTarget.name + ", health: " + attackTarget.GetHealth() );
-
         while (attackTarget != null && attackTarget.GetHealth() > 0f)
         {
+            transform.LookAt(attackTarget.transform);
+
             float damage = baseDamage + Random.Range(-damageModifier, damageModifier);
 
-            bool success = attackTarget.Attack(damage);
-
-            Debug.Log("Attacking " + attackTarget.tag + " for " + damage + " damage. Tower health = " + attackTarget.GetHealth());
+            float damageDone = attackTarget.Attack(damage);
 
             // enemy is or was dead
             // stop attacking and exit coroutine
-            if (!success)
+            if (damageDone <= 0f)
             {
                 attackTarget = null;
 
@@ -151,8 +157,6 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
     public void Damage(float damage)
     {
         health -= damage;
-
-        Debug.Log("Enemy damaged for " + damage + " points. Health = " + health);
 
         if (health <= 0f)
         {
