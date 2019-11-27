@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class HealthController : MonoBehaviour
 {
+    public bool blackAndWhite = false;
     public Slider healthbar;
 
     private Quaternion rotation;
@@ -33,14 +34,22 @@ public class HealthController : MonoBehaviour
         this.health = health;
         healthbar.value = health;
 
-        if (health < 0.5f)
+        if (blackAndWhite)
         {
-            healthbar.image.color = Color.Lerp(red, yellow, health * 2f);
+            healthbar.image.color = Color.gray;
         }
 
         else
         {
-            healthbar.image.color = Color.Lerp(yellow, green, (health - 0.5f) / 2f);
+            if (health < 0.5f)
+            {
+                healthbar.image.color = Color.Lerp(red, yellow, health * 2f);
+            }
+
+            else
+            {
+                healthbar.image.color = Color.Lerp(yellow, green, (health - 0.5f) / 2f);
+            }
         }
     }
 }

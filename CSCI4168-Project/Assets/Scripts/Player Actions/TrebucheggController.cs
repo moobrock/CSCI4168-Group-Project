@@ -77,16 +77,16 @@ public class TrebucheggController : MonoBehaviour
             if (lerp > 1)
             {
                 lerp = 1f;
-                diff = -0.05f;
+                diff = -0.03f;
             }
 
             if (lerp < 0)
             {
                 lerp = 0f;
-                diff = 0.05f;
+                diff = 0.03f;
             }
 
-            alpha = Mathf.Lerp(0.1f, 0.5f, lerp);
+            alpha = Mathf.Lerp(0.1f, 0.4f, lerp);
 
             radiusSpriteRenderer.color = new Color(radiusSpriteRenderer.color.r,
                                                    radiusSpriteRenderer.color.g,
@@ -115,7 +115,7 @@ public class TrebucheggController : MonoBehaviour
                 animator.SetTrigger("shoot");
 
                 // wait for animation to end
-                float waitTime = 0.983f, time = 0f;
+                float waitTime = 1.2f, time = 0f;
 
                 while (time < waitTime)
                 {
