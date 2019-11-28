@@ -57,6 +57,7 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
         if (GameManager.gameManager.barnAttackPosition == null)
             GameManager.gameManager.FindBarn();
 
+        attackTarget = GameManager.gameManager.GetBarnController();
         destination = GameManager.gameManager.barnAttackPosition?.position ?? transform.position;
 
         SetDestination(destination);
@@ -95,7 +96,6 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
 
             else
             {
-                attackTarget = null;
                 SetDestination();
             }
         }

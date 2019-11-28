@@ -24,6 +24,8 @@ public class BarnController : TowerController
         {
             if (cow.activeInHierarchy)
             {
+                StartCoroutine(cow.GetComponent<Cow>()?.Moo());
+
                 StartCoroutine(Fade(cow.GetComponent<SpriteRenderer>()));
                 break;
             }
