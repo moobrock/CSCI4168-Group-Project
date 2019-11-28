@@ -81,13 +81,16 @@ public class UFOController : MonoBehaviour, EnemyController
 
             if (barn != null)
             {
-                Transform attackPosition = barn.GetAttackPosition();
+                Transform attackPosition = barn.cowPen ?? barn.GetAttackPosition();
 
-                targetPosition= attackPosition.position;
+                if (attackPosition != null)
+                {
+                    targetPosition = attackPosition.position;
 
-                attackTarget = barn;
+                    attackTarget = barn;
 
-                StartCoroutine(ApproachTower());
+                    StartCoroutine(ApproachTower());
+                }
             }
 
             else
@@ -101,7 +104,7 @@ public class UFOController : MonoBehaviour, EnemyController
     {
         while (attackTarget != null)
         {
-            float distance = (transform.position - attackTarget.GetAttackPosition().position).magnitude;
+            float distance = (transform.position - attackTarget.cowPen.position).magnitude;
 
             // in attack range of tower
             // start attacking and exit coroutine
@@ -122,13 +125,29 @@ public class UFOController : MonoBehaviour, EnemyController
 
         Debug.Log("Abducting cow " + attackTarget.tag + " for " + damageDone + " damage. Tower health = " + attackTarget.GetHealth());
 
-        if (damageDone <= 0f)
+        if (damageDone > 0f)
         {
             cowsAbducted++;
 
             StopAllCoroutines();
-            Destroy(gameObject);
+            StartCoroutine(GoToSpawn());
         }
+    }
+
+    private IEnumerator GoToSpawn()
+    {
+        Vector3 spawn = GameManager.gameManager.GetNearestSpawn(transform.position).position;
+        Vector3 position;
+
+        while ((spawn - transform.position).sqrMagnitude > 9f)
+        {
+            position = Vector3.MoveTowards(transform.position, spawn, speed);
+            position.y = 0;
+            transform.position = position;
+            yield return new WaitForEndOfFrame();
+        }
+
+        Destroy(gameObject);
     }
 
     public void Damage(float damage)

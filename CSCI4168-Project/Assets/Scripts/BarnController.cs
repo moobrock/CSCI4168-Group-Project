@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class BarnController : TowerController
 {
-    private int numCows = 3;
+    public GameObject[] cows;
+
+    public Transform cowPen;
 
     private new void DestroyTower()
     {
@@ -15,14 +17,24 @@ public class BarnController : TowerController
 
     public float AbductCow()
     {
-        float damage = maxHealth / (float)numCows;
+        float damage = cows.Length > 0 ? maxHealth / (float)cows.Length : 0;
+
+        // take away a cow
+        foreach (GameObject cow in cows)
+        {
+            if (cow.activeInHierarchy)
+            {
+                cow.SetActive(false);
+                break;
+            }
+        }
 
         return Attack(damage);
     }
 
     public void ReturnCows(int count)
     {
-        float damage = maxHealth / (float)numCows * count;
+        float damage = cows.Length > 0 ? maxHealth / (float)cows.Length : 0;
 
         health = Mathf.Min(maxHealth, health + damage);
     }
