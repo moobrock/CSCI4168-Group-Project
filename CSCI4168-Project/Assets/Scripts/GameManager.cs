@@ -61,6 +61,11 @@ public class GameManager : MonoBehaviour
         FindReferences();
     }
 
+    public Transform GetPenTransform()
+    {
+        return barnAttackPosition?.parent?.Find("Pen");
+    }
+
     public BarnController GetBarnController()
     {
         return barnAttackPosition?.parent?.GetComponent<BarnController>();
@@ -93,7 +98,11 @@ public class GameManager : MonoBehaviour
     public void StartRoundCoroutine()
     {
         roundIndex = GetNextLevelIndex();
+    }
 
+    public void StartRound(int roundNum)
+    {
+        roundIndex = roundNum;
         StartCoroutine(StartRound());
     }
 

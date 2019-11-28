@@ -31,7 +31,7 @@ public class UFOOrbit : MonoBehaviour
         }
 
         position = Vector3.Slerp(transform.parent.position - transform.parent.right, transform.parent.position + transform.parent.right, lerp);
-        position.y = 3;
+        position.y = 6;
 
         transform.position = position;
 
