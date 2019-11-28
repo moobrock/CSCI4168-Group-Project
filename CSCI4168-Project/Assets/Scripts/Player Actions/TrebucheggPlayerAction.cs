@@ -42,7 +42,7 @@ public class TrebucheggPlayerAction : PlayerActionDraggable
 
         if (other.tag == "Defense Placement")
         {
-            if (numAvailable > 0)
+            if (numAvailable > 0 && !other.Find("Trebuchegg(Clone)"))
             {
                 GameObject trebuchegg = Instantiate(trebucheggPrefab, other);
                 trebuchegg.transform.rotation = Quaternion.Euler(90, 0, 0);
