@@ -80,8 +80,8 @@ MonoBehaviour:
   damageModifier: 0.02
   attackFrequency: 1.3
   attackRange: 2.5
-  health: 1
-  maxHealth: 1
+  health: 0.5
+  maxHealth: 0.5
 --- !u!195 &4480620268913781027
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -238,16 +238,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4480620268913781032}
     m_Modifications:
-    - target: {fileID: 5521435882091022163, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
-        type: 3}
-      propertyPath: m_Name
-      value: Health
-      objectReference: {fileID: 0}
-    - target: {fileID: 5521435882091022163, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
-      objectReference: {fileID: 0}
     - target: {fileID: 5645377009787415851, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -352,6 +342,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5521435882091022163, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
+        type: 3}
+      propertyPath: m_Name
+      value: Health
+      objectReference: {fileID: 0}
+    - target: {fileID: 5521435882091022163, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5293379722203368630, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
         type: 3}
