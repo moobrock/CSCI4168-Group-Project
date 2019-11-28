@@ -87,6 +87,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator StartRound()
     {
+        killCounter = 0;
         startTime = Time.realtimeSinceStartup;
 
         SceneManager.LoadScene(roundIndex);
@@ -98,11 +99,11 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ShowTimer());
     }
 
-    public void EndRound()
+    public void EndRound(bool playerWon = false)
     {
         //StopAllCoroutines();
 
-        StartCoroutine(LoadEndOfRoundScene());
+        StartCoroutine(LoadEndOfRoundScene(playerWon));
     }
     
     private IEnumerator SpawnEnemies()
@@ -144,7 +145,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private IEnumerator LoadEndOfRoundScene()
+    private IEnumerator LoadEndOfRoundScene(bool playerWon)
     {
         int index = GetNextLevelIndex();        // save index of next level
 
@@ -152,6 +153,11 @@ public class GameManager : MonoBehaviour
         yield return new WaitForEndOfFrame();
 
         Text timerText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Timer")?.GetComponent<Text>();
+        Text killText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Kill Counter")?.GetComponent<Text>();
+        Text resultText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Result")?.GetComponent<Text>();
+
+        killText.text = killCounter.ToString();
+        resultText.text = playerWon ? "You Won!" : "You Lost!";
 
         for (int i = 0; i < 5; i++)
         {
@@ -179,10 +185,16 @@ public class GameManager : MonoBehaviour
                 roundTimerText.text = (int)(roundTime - time) / 60 + ":" + ((int)(roundTime - time) % 60);
             }
 
+            // add approx 1 coin per every 10s to avoid player running out of resources
+            if ((roundTime - time) % 10 < 0.01f)
+            {
+                AddCoins(1);
+            }
+
             yield return new WaitForEndOfFrame();
         }
 
-        EndRound();
+        EndRound(true);
     }
 
     private void FindReferences()
