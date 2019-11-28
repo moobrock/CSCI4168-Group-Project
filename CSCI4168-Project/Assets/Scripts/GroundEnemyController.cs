@@ -93,6 +93,7 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
             else
             {
                 attackTarget = null;
+                SetDestination();
             }
         }
     }

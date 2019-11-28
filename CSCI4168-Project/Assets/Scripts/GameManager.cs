@@ -61,6 +61,11 @@ public class GameManager : MonoBehaviour
         FindReferences();
     }
 
+    public BarnController GetBarnController()
+    {
+        return barnAttackPosition?.parent?.GetComponent<BarnController>();
+    }
+
     public Transform GetNearestSpawn(Vector3 position)
     {
         Transform nearest = null;
@@ -123,7 +128,7 @@ public class GameManager : MonoBehaviour
 
             if (time > nextEnemySpawnTime)
             {
-                enemySpawnIndex = (enemySpawnIndex + 1) % enemySpawns.Length;
+                enemySpawnIndex = Mathf.Min(Random.Range(0, enemySpawns.Length + 1), enemySpawns.Length - 1);
 
                 if (enemySpawns[enemySpawnIndex] != null)
 

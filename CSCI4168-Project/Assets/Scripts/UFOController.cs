@@ -169,8 +169,18 @@ public class UFOController : MonoBehaviour, EnemyController
             }
 
             // return cows if any were abducted
-            if (cowsAbducted > 0 && attackTarget != null)
-                attackTarget.ReturnCows(cowsAbducted);
+            if (cowsAbducted > 0)
+            {
+                if (attackTarget == null)
+                {
+                    attackTarget = GameManager.gameManager.GetBarnController();
+                }
+
+                if (attackTarget == null)
+                    Debug.LogWarning("Cant return cows");
+
+                attackTarget?.ReturnCows(cowsAbducted);
+            }
 
             Destroy(this.gameObject);
         }

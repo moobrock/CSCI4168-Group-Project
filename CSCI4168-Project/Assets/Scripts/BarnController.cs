@@ -36,6 +36,21 @@ public class BarnController : TowerController
     {
         float damage = cows.Length > 0 ? maxHealth / (float)cows.Length : 0;
 
+        int returned = 0;
+
+        // put back cows
+        foreach (GameObject cow in cows)
+        {
+            if (!cow.activeInHierarchy)
+            {
+                cow.SetActive(true);
+                returned++;
+
+                if (returned == count)
+                    break;
+            }
+        }
+
         health = Mathf.Min(maxHealth, health + damage);
     }
 }
