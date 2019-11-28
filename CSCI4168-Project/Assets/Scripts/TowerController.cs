@@ -37,7 +37,7 @@ public class TowerController : MonoBehaviour
                 DestroyTower();
             }
 
-            healthController.SetHealth(health / maxHealth);
+            SetHealth(health / maxHealth);
 
             return startHealth - health;
         }
@@ -45,6 +45,11 @@ public class TowerController : MonoBehaviour
         DestroyTower();
 
         return 0f;
+    }
+
+    protected virtual void SetHealth(float health)
+    {
+        healthController.SetHealth(health);
     }
 
     protected void DestroyTower()

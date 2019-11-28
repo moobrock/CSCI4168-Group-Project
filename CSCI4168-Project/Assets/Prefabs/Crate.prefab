@@ -138,7 +138,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 582b7697d5945234aa43141267630b49, type: 2}
+  - {fileID: 2100000, guid: 4966e206b3acc7f47a39bcaaad8c679d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -212,8 +212,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5309019985532617748}
   - component: {fileID: 5309019985532617749}
-  - component: {fileID: 5309019985532617750}
   - component: {fileID: 5309019985532617770}
+  - component: {fileID: 5678145963281226933}
   m_Layer: 0
   m_Name: Crate
   m_TagString: Tower
@@ -253,21 +253,6 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5309019985532617750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5309019985532617771}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 849116bd425cd7741b2f26a17dddb6c9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  healthController: {fileID: 2833518348673400434}
-  health: 0.5
-  maxHealth: 0.5
 --- !u!208 &5309019985532617770
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -284,6 +269,25 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &5678145963281226933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5309019985532617771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86818635d1f30d448a8391267f220b10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthController: {fileID: 2833518348673400434}
+  health: 0.5
+  maxHealth: 0.5
+  fullHealth: {fileID: 21300000, guid: a32dac2476139e84196d5982316d7059, type: 3}
+  halfHealth: {fileID: 21300000, guid: 1cde2609d2748a04695132d44168ba30, type: 3}
+  quarterHealth: {fileID: 21300000, guid: e9c552472cc8c5247bcb442e114acdc2, type: 3}
+  sprite: {fileID: 4383469482545380810}
 --- !u!1001 &9177114973861534291
 PrefabInstance:
   m_ObjectHideFlags: 0
