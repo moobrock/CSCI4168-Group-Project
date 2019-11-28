@@ -130,14 +130,14 @@ public class GameManager : MonoBehaviour
                 {
                     GameObject enemy;
 
-                    // spawn ground units 90% of the time
+                    // spawn ufo units 10% of the time
                     if (Random.value > 0.9f)
                     {
                         enemy = GameObject.Instantiate(ufoEnemyPrefab, enemySpawns[enemySpawnIndex].position, Quaternion.identity);
                     }
-
-                    // spawn ufo units 10% of the time
-                    else
+                    
+                    // spawn ground units 90% of the time
+                    //else
                     {
                         enemy = GameObject.Instantiate(groundEnemyPrefab, enemySpawns[enemySpawnIndex].position, Quaternion.identity);
                     }
@@ -161,7 +161,7 @@ public class GameManager : MonoBehaviour
 
         Text timerText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Timer")?.GetChild(0)?.GetComponent<Text>();
         Text killText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Kill Counter")?.GetChild(0)?.GetComponent<Text>();
-        Text resultText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Result")?.GetChild(0)?.GetComponent<Text>();
+        Text resultText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Result")?.Find("Text")?.GetComponent<Text>();
 
         killText.text = killCounter.ToString();
         resultText.text = playerWon ? "You Won!" : "You Lost!";

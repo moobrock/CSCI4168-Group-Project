@@ -58,6 +58,7 @@ public class UFOController : MonoBehaviour, EnemyController
 
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed);
             transform.LookAt(targetPosition);
+            healthController.transform.rotation = Quaternion.Euler(90, 0, 0);
         }
     }
 
