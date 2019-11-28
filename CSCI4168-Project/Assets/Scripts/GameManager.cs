@@ -157,7 +157,7 @@ public class GameManager : MonoBehaviour
         {
             if (timerText != null)
             {
-                timerText.text = (i + 1).ToString();
+                timerText.text = (5 - i).ToString();
             }
             yield return new WaitForSecondsRealtime(1.0f);
         }
@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour
             {
                 playerCoinText = levelBase.Find("UI")?.Find("Coin Text")?.GetComponent<Text>();
 
-                roundTimerText = levelBase.Find("UI")?.Find("Round Timer")?.GetComponent<Text>();
+                roundTimerText = levelBase.Find("UI")?.Find("Round Timer")?.Find("Text")?.GetComponent<Text>();
                 roundTimerText.text = (int)(roundTime) / 60 + ":" + ((int)roundTime % 60);
 
                 barnAttackPosition = levelBase.Find("Barn")?.transform.GetChild(0);
