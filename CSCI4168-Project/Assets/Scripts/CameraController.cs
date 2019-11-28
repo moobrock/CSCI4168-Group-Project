@@ -40,7 +40,6 @@ public class CameraController : MonoBehaviour
             if (diff > 0f)
             {
                 transform.position = Vector3.MoveTowards(transform.position, mousePositionWorld, speed * diff);
-                Debug.Log(diff);
             }
         }
     }

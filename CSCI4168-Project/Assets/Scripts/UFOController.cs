@@ -69,8 +69,6 @@ public class UFOController : MonoBehaviour, EnemyController
             float x = Random.Range(boundaryRect.xMin, boundaryRect.xMax);
             float z = Random.Range(boundaryRect.yMin, boundaryRect.yMax);
             targetPosition = new Vector3(x, 0, z);
-
-            Debug.Log("Target position: " + targetPosition);
         }
     }
 
@@ -103,15 +101,13 @@ public class UFOController : MonoBehaviour, EnemyController
     {
         while (attackTarget != null)
         {
-            Debug.Log("Approaching");
-
             float distance = (transform.position - attackTarget.GetAttackPosition().position).magnitude;
 
             // in attack range of tower
             // start attacking and exit coroutine
             if (distance <= attackRange)
             {
-                AttackTower();
+                AbductCow();
 
                 yield break;
             }
@@ -120,7 +116,7 @@ public class UFOController : MonoBehaviour, EnemyController
         }
     }
 
-    private void AttackTower()
+    private void AbductCow()
     {
         float damageDone = attackTarget.AbductCow();
 
@@ -131,30 +127,13 @@ public class UFOController : MonoBehaviour, EnemyController
             cowsAbducted++;
 
             StopAllCoroutines();
-            StartCoroutine(Leave());
+            Destroy(gameObject);
         }
-    }
-
-    private IEnumerator Leave()
-    {
-        Transform target = GameManager.gameManager.GetNearestSpawn(transform.position);
-        targetPosition = target.position;
-
-        while ((transform.position - targetPosition).sqrMagnitude > 9f)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, target.position, speed);
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        Destroy(gameObject);
     }
 
     public void Damage(float damage)
     {
         health -= damage;
-
-        Debug.Log("Enemy damaged for " + damage + " points. Health = " + health);
 
         if (health <= 0f)
         {

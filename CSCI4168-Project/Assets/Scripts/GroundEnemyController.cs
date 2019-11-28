@@ -67,8 +67,6 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger enter - " + other.name);
-
         if (other.tag == "Tower" || other.tag == "Barn")
         {
             // get tower attack position
