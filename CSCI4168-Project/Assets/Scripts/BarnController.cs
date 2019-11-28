@@ -24,12 +24,28 @@ public class BarnController : TowerController
         {
             if (cow.activeInHierarchy)
             {
-                cow.SetActive(false);
+                StartCoroutine(Fade(cow.GetComponent<SpriteRenderer>()));
                 break;
             }
         }
 
         return Attack(damage);
+    }
+
+    private IEnumerator Fade(SpriteRenderer spriteRenderer)
+    {
+        float time = 0f;
+
+        while (time < 1f)
+        {
+            time += Time.deltaTime;
+
+            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, Mathf.Lerp(1f, 0f, time));
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        spriteRenderer.gameObject.SetActive(false);
     }
 
     public void ReturnCows(int count)

@@ -78,7 +78,7 @@ public class UFOController : MonoBehaviour, EnemyController
         if (other.tag == "Barn" && cowsAbducted == 0)
         {
             // get tower attack position
-            BarnController barn = other.GetComponent<BarnController>();
+            BarnController barn = GameManager.gameManager.GetBarnController();
 
             if (barn != null)
             {

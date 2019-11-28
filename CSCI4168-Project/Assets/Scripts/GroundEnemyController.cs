@@ -115,6 +115,8 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
 
             yield return new WaitForEndOfFrame();
         }
+
+        SetDestination();
     }
 
     private IEnumerator AttackTower()
