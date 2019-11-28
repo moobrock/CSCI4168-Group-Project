@@ -172,10 +172,20 @@ public class GameManager : MonoBehaviour
 
         SceneManager.LoadScene("EndOfRound");
         yield return new WaitForEndOfFrame();
+        yield return new WaitForEndOfFrame();
 
         Text timerText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Timer")?.GetChild(0)?.GetComponent<Text>();
         Text killText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Kill Counter")?.GetChild(0)?.GetComponent<Text>();
         Text resultText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Result")?.Find("Text")?.GetComponent<Text>();
+
+        if (timerText == null)
+            Debug.LogWarning("Cant find timer text");
+
+        if (killText == null)
+            Debug.LogWarning("Cant find kill text");
+
+        if (resultText == null)
+            Debug.LogWarning("Cant find result text");
 
         killText.text = killCounter.ToString();
         resultText.text = playerWon ? "You Won!" : "You Lost!";

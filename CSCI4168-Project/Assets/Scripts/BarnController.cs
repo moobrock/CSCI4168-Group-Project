@@ -32,7 +32,7 @@ public class BarnController : TowerController
         return Attack(damage);
     }
 
-    private IEnumerator Fade(SpriteRenderer spriteRenderer)
+    private IEnumerator Fade(SpriteRenderer spriteRenderer, bool fadeOut = false)
     {
         float time = 0f;
 
@@ -40,16 +40,20 @@ public class BarnController : TowerController
         {
             time += Time.deltaTime;
 
-            spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, Mathf.Lerp(1f, 0f, time));
+            if (fadeOut)
+                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, Mathf.Lerp(0f, 1f, time));
+            else
+                spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, Mathf.Lerp(1f, 0f, time));
 
             yield return new WaitForEndOfFrame();
         }
 
-        spriteRenderer.gameObject.SetActive(false);
+        spriteRenderer.gameObject.SetActive(fadeOut);
     }
 
     public void ReturnCows(int count)
     {
+        Debug.Log("Returning " + count + " Cows");
         float damage = cows.Length > 0 ? maxHealth / (float)cows.Length : 0;
 
         int returned = 0;
@@ -59,7 +63,8 @@ public class BarnController : TowerController
         {
             if (!cow.activeInHierarchy)
             {
-                cow.SetActive(true);
+                StartCoroutine(Fade(cow.GetComponent<SpriteRenderer>(), true));
+
                 returned++;
 
                 if (returned == count)

@@ -13,8 +13,11 @@ public class FlowerPotController : MonoBehaviour
 
     private List<GroundEnemyController> affectedEnemies;
 
+    private AudioSource audio;
+
     private void Start()
     {
+        audio = GetComponent<AudioSource>();
         affectedEnemies = new List<GroundEnemyController>();
 
         StartCoroutine(CountDown());
@@ -69,6 +72,11 @@ public class FlowerPotController : MonoBehaviour
             other.GetComponent<GroundEnemyController>()?.Damage(damage);
 
             Damage(damage);
+
+            if (!audio?.isPlaying ?? false)
+            {
+                audio.Play();
+            }
         }
     }
 

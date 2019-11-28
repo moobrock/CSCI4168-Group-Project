@@ -3128,6 +3128,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1708918238}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &787051684 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3578661806341795518, guid: 539730dcd245157449ed5b3470cb6c84,
+    type: 3}
+  m_PrefabInstance: {fileID: 1369003965457556110}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &804047966
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3212,6 +3218,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e1398f3926843f4daa935a7c5845b44, type: 3}
+--- !u!1 &819683018 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 418822734758616557, guid: 539730dcd245157449ed5b3470cb6c84,
+    type: 3}
+  m_PrefabInstance: {fileID: 1369003965457556110}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &826770681
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4052,6 +4064,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthController: {fileID: 266289948}
+  attackPosition: {fileID: 0}
   health: 5
   maxHealth: 5
   cows: []
@@ -9007,6 +9020,16 @@ PrefabInstance:
       propertyPath: numAvailable
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 2381233056326207975, guid: 539730dcd245157449ed5b3470cb6c84,
+        type: 3}
+      propertyPath: cows.Array.data[1]
+      value: 
+      objectReference: {fileID: 819683018}
+    - target: {fileID: 2381233056326207975, guid: 539730dcd245157449ed5b3470cb6c84,
+        type: 3}
+      propertyPath: cows.Array.data[2]
+      value: 
+      objectReference: {fileID: 787051684}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 539730dcd245157449ed5b3470cb6c84, type: 3}
 --- !u!1001 &2194073375589850854

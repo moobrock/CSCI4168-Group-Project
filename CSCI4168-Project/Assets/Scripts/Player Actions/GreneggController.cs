@@ -18,9 +18,11 @@ public class GreneggController : MonoBehaviour
     private float diff = 0.1f;
 
     private SpriteRenderer targetSpriteRenderer;
+    private AudioSource audio;
 
     private void Start()
     {
+        audio = GetComponent<AudioSource>();
         enemyControllers = new List<EnemyController>();
 
         targetSpriteRenderer = transform.Find("Target")?.GetComponent<SpriteRenderer>();
@@ -77,12 +79,16 @@ public class GreneggController : MonoBehaviour
             }
         }
 
-        // TODO: play particle effect
-
         foreach (EnemyController enemy in enemyControllers)
         {
             enemy?.Damage(damage);
         }
+
+        // TODO: play particle effect
+
+        audio?.Play();
+
+        while (audio.isPlaying) yield return new WaitForEndOfFrame(); // wait for sound to stop before destroying
 
         Destroy(gameObject);
     }

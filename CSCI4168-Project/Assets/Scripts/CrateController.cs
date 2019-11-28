@@ -5,27 +5,43 @@ using UnityEngine.UI;
 
 public class CrateController : TowerController
 {
-    public Sprite fullHealth;
-    public Sprite halfHealth;
-    public Sprite quarterHealth;
+    public Sprite fullHealthSprite;
+    public Sprite halfHealthSprite;
+    public Sprite quarterHealthSprite;
+
+    private bool halfHealth;
+    private bool quarterHealth;
 
     public SpriteRenderer sprite;
+
+    private AudioSource audio;
+
+    protected override void Start()
+    {
+        base.Start();
+        audio = GetComponent<AudioSource>();
+    }
 
     protected override void SetHealth(float health)
     {
         if (health > (maxHealth / 1.25f))
         {
-            sprite.sprite = fullHealth;
+            sprite.sprite = fullHealthSprite;
         }
 
-        else if (health > (maxHealth / 4f))
+        else if (health > (maxHealth / 4f) && !halfHealth)
         {
-            sprite.sprite = halfHealth;
+            halfHealth = true;
+            sprite.sprite = halfHealthSprite;
+            audio?.Play();
         }
 
-        else
+        else if (sprite.sprite != quarterHealth && !quarterHealth)
         {
-            sprite.sprite = quarterHealth;
+            quarterHealth = true;
+            sprite.sprite = quarterHealthSprite;
+            sprite.transform.position = new Vector3(sprite.transform.position.x, 0, sprite.transform.position.z);
+            audio?.Play();
         }
 
         base.SetHealth(health);

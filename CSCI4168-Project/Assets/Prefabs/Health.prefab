@@ -185,6 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80fa3ffa0d8df244cbfc148765ef88fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blackAndWhite: 0
   healthbar: {fileID: 7241888131328730396}
   green: {r: 0.028941292, g: 0.6509434, b: 0, a: 1}
   yellow: {r: 0.9245283, g: 0.821444, b: 0.008721986, a: 1}

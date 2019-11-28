@@ -173,11 +173,14 @@ public class UFOController : MonoBehaviour, EnemyController
             {
                 if (attackTarget == null)
                 {
+                    GameManager.gameManager.FindBarn();
                     attackTarget = GameManager.gameManager.GetBarnController();
                 }
 
                 if (attackTarget == null)
+                {
                     Debug.LogWarning("Cant return cows");
+                }
 
                 attackTarget?.ReturnCows(cowsAbducted);
             }

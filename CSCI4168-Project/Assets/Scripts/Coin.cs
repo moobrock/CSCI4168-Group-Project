@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
+    AudioSource audio;
+
+    private void Awake()
+    {
+        audio = GetComponent<AudioSource>();
+    }
+
     private void Update()
     {
         if (Input.GetMouseButtonUp(0))
@@ -17,13 +24,22 @@ public class Coin : MonoBehaviour
             {
                 if (hit.transform == this.transform)
                 {
-                    Debug.Log("Coin clicked!");
-
-                    GameManager.gameManager.AddCoins(1);
-
-                    Destroy(gameObject);
+                    StartCoroutine(PickupCoin());
                 }
             }
         }
+    }
+
+    private IEnumerator PickupCoin()
+    {
+        audio?.Play();
+        GameManager.gameManager.AddCoins(1);
+
+        while (audio?.isPlaying ?? false)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        Destroy(gameObject);
     }
 }

@@ -43,10 +43,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d358bc13b0b49c409c70297e62fa02d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerCoinText: {fileID: 0}
   barnAttackPosition: {fileID: 0}
   enemySpawns: []
   groundEnemyPrefab: {fileID: 4480620268913781026, guid: 0da03eb04db80e644b5638a2a51670d3,
     type: 3}
   ufoEnemyPrefab: {fileID: 9083854440208443636, guid: f687a91dc2fad3847810d1bfa32d7580,
     type: 3}
+  enemySpawnRate: 14
+  enemySpawnVariance: 3
   roundTimerText: {fileID: 0}

@@ -6,16 +6,17 @@ public class TowerController : MonoBehaviour
 {
     public HealthController healthController;
 
-    protected Transform attackPosition;
+    public Transform attackPosition;
     protected GameObject towerModel;
 
     public static float attackRadius = 5f;
     public float health = 1f;
     public float maxHealth = 1f;
 
-    protected void Start()
+    protected virtual void Start()
     {
-        attackPosition = transform.GetChild(0);
+        if (attackPosition == null)
+            attackPosition = transform.GetChild(0);
         towerModel = transform.GetChild(1).gameObject;
     }
     

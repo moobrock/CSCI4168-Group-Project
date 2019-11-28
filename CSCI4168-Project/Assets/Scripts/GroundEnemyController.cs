@@ -5,6 +5,7 @@ using UnityEngine.AI;
 
 public class GroundEnemyController : MonoBehaviour, EnemyController
 {
+    public Animator animator;
     public HealthController healthController;
 
     public GameObject coinPrefab;
@@ -25,11 +26,13 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
     public float maxHealth = 1f;
 
     private TowerController attackTarget;
+    private AudioSource audio;
 
     private void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         navMeshAgent.speed = baseSpeed;
+        audio = GetComponent<AudioSource>();
 
         Physics.IgnoreLayerCollision(8, 8);
 
@@ -54,7 +57,7 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
         if (GameManager.gameManager.barnAttackPosition == null)
             GameManager.gameManager.FindBarn();
 
-        destination = GameManager.gameManager.barnAttackPosition.position;
+        destination = GameManager.gameManager.barnAttackPosition?.position ?? transform.position;
 
         SetDestination(destination);
     }
@@ -119,26 +122,61 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
         SetDestination();
     }
 
+    private IEnumerator VerifyTargetOrBreak()
+    {
+        if (attackTarget?.attackPosition != null)
+            audio?.Play();
+        else
+        {
+            attackTarget = null;
+            yield break;
+        }
+    }
+
+
     private IEnumerator AttackTower()
     {
         while (attackTarget != null && attackTarget.GetHealth() > 0f)
         {
-            transform.LookAt(attackTarget.transform);
+            animator?.SetTrigger("attack");
 
-            float damage = baseDamage + Random.Range(-damageModifier, damageModifier);
+            yield return new WaitForSecondsRealtime(attackFrequency / 4f);
 
-            float damageDone = attackTarget.Attack(damage);
+            yield return VerifyTargetOrBreak();
 
-            // enemy is or was dead
-            // stop attacking and exit coroutine
-            if (damageDone <= 0f)
+            yield return new WaitForSecondsRealtime(attackFrequency / 4f);
+
+            yield return VerifyTargetOrBreak();
+
+
+            if (attackTarget.attackPosition != null)
             {
-                attackTarget = null;
+                transform.LookAt(attackTarget.transform);
 
-                yield break;
+                float damage = baseDamage + Random.Range(-damageModifier, damageModifier);
+
+                float damageDone = attackTarget.Attack(damage);
+
+                // enemy is or was dead
+                // stop attacking and exit coroutine
+                if (damageDone <= 0f)
+                {
+                    attackTarget = null;
+
+                    yield break;
+                }
+
+                yield return new WaitForSecondsRealtime(attackFrequency / 4f);
+                yield return VerifyTargetOrBreak();
+
+                yield return new WaitForSecondsRealtime(attackFrequency / 4f);
+                yield return VerifyTargetOrBreak();
             }
 
-            yield return new WaitForSecondsRealtime(attackFrequency);
+            else
+            {
+                yield break;
+            }
         }
 
         SetDestination();
