@@ -73,7 +73,7 @@ MonoBehaviour:
   healthController: {fileID: 494061912837423645}
   coinPrefab: {fileID: 8809203469102417168, guid: b46b1d0284a90ee47bc0a49c47e47a47,
     type: 3}
-  baseCoinDrop: 2
+  baseCoinDrop: 1
   coinDropVariance: 1
   baseSpeed: 3
   baseDamage: 0.05
@@ -238,6 +238,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4480620268913781032}
     m_Modifications:
+    - target: {fileID: 5521435882091022163, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
+        type: 3}
+      propertyPath: m_Name
+      value: Health
+      objectReference: {fileID: 0}
+    - target: {fileID: 5521435882091022163, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
+        type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5645377009787415851, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -342,16 +352,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5521435882091022163, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
-        type: 3}
-      propertyPath: m_Name
-      value: Health
-      objectReference: {fileID: 0}
-    - target: {fileID: 5521435882091022163, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
-        type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5293379722203368630, guid: 9bcb1ff9f7cad8d4ebd9cc60235c62f9,
         type: 3}
