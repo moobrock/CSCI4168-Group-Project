@@ -137,7 +137,7 @@ public class UFOController : MonoBehaviour, EnemyController
 
     private IEnumerator Leave()
     {
-        Transform target = GameManager.gameManager.GetNearestSpawn();
+        Transform target = GameManager.gameManager.GetNearestSpawn(transform.position);
         targetPosition = target.position;
 
         while ((transform.position - targetPosition).sqrMagnitude > 9f)
