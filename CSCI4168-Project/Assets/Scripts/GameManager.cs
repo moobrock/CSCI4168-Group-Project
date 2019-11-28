@@ -21,8 +21,8 @@ public class GameManager : MonoBehaviour
     private int enemySpawnIndex = 0;
 
     private float nextEnemySpawnTime = 0f;      // time until next enemy is spawned (enemy spawn rate + random variance) 
-    private float enemySpawnRate = 14f;         // in seconds
-    private float enemySpawnVariance = 3f;      // in seconds
+    public float enemySpawnRate = 14f;         // in seconds
+    public float enemySpawnVariance = 3f;      // in seconds
 
     private float startTime = 0f;
     private float roundTime = 3 * 60f;
