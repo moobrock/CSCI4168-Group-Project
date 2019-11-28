@@ -61,15 +61,22 @@ public class GameManager : MonoBehaviour
         FindReferences();
     }
 
-    // TODO: get nearest
-    public Transform GetNearestSpawn()
+    public Transform GetNearestSpawn(Vector3 position)
     {
-        if (enemySpawns == null || enemySpawns.Length == 0)
+        Transform nearest = null;
+
+        float dist = float.MaxValue;
+
+        foreach (Transform enemySpawn in enemySpawns)
         {
-            return null;
+            if ((enemySpawn.position - position).sqrMagnitude < dist)
+            {
+                nearest = enemySpawn;
+                dist = (enemySpawn.position - position).sqrMagnitude;
+            }
         }
 
-        return enemySpawns[0];
+        return nearest;
     }
 
     // return index between 0 and second last scene index
