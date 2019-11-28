@@ -7,8 +7,10 @@ public class UFOOrbit : MonoBehaviour
     float lerp;
     float diff = 0.05f;
 
-    int flipRotationTime = 1;
+    float flipRotationTime = 0.25f;
     bool flipRotationTrigger;
+
+    float time = 0;
 
     Vector3 position;
 
@@ -33,8 +35,12 @@ public class UFOOrbit : MonoBehaviour
 
         transform.position = position;
 
-        if ((int)Time.realtimeSinceStartup % flipRotationTime == 0)
+        time += Time.deltaTime;
+        if (time > flipRotationTime)
+        {
+            time = 0f;
             FlipRotation();
+        }
     }
 
     void FlipRotation ()
