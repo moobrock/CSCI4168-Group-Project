@@ -3012,6 +3012,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Trebuchegg Action
       objectReference: {fileID: 0}
+    - target: {fileID: 5290939938567691591, guid: 88253f1bda743d34f940ad7141b56ba4,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5290939938567691591, guid: 88253f1bda743d34f940ad7141b56ba4,
+        type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 4096
+      objectReference: {fileID: 0}
+    - target: {fileID: 5290939938567691591, guid: 88253f1bda743d34f940ad7141b56ba4,
+        type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1024
+      objectReference: {fileID: 0}
     - target: {fileID: 8634070275368939955, guid: 88253f1bda743d34f940ad7141b56ba4,
         type: 3}
       propertyPath: m_Name
