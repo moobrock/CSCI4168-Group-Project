@@ -29,7 +29,7 @@ public class UFOController : MonoBehaviour, EnemyController
     {
         targetPosition = transform.position;
 
-        RectTransform rt = GameObject.Find("Level Base")?.transform.Find("UI")?.Find("Camera Boundary")?.GetComponent<RectTransform>();
+        RectTransform rt = GameObject.Find("Level Base")?.transform.Find("Camera Boundary")?.GetComponent<RectTransform>();
 
         if (rt != null)
         {

@@ -52,8 +52,14 @@ public class PlayerActionDraggable : MonoBehaviour
 
     protected IEnumerator DragIcon()
     {
+        // left click to drag, right to cancel
         while (Input.GetMouseButton(0))
         {
+            if (Input.GetMouseButton(1))
+            {
+                yield break;
+            }
+
             transform.position = Input.mousePosition - offset;
 
             yield return new WaitForEndOfFrame();

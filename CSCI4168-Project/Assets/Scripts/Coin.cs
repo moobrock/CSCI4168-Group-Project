@@ -6,6 +6,8 @@ public class Coin : MonoBehaviour
 {
     AudioSource audio;
 
+    bool collected;
+
     private void Awake()
     {
         audio = GetComponent<AudioSource>();
@@ -13,7 +15,7 @@ public class Coin : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (!collected && Input.GetMouseButtonUp(0))
         {
             // check if this coin was clicked
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -32,6 +34,8 @@ public class Coin : MonoBehaviour
 
     private IEnumerator PickupCoin()
     {
+        collected = true;
+
         audio?.Play();
         GameManager.gameManager.AddCoins(1);
 
