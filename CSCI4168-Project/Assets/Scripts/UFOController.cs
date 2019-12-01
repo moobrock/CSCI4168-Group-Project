@@ -47,7 +47,7 @@ public class UFOController : MonoBehaviour, EnemyController
         }
     }
 
-    void Update()
+    void FixedUpdate()
     {
         if (cowsAbducted == 0)
         {
