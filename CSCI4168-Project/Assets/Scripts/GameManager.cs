@@ -122,8 +122,6 @@ public class GameManager : MonoBehaviour
 
     public void EndRound(bool playerWon = false)
     {
-        //StopAllCoroutines();
-
         StartCoroutine(LoadEndOfRoundScene(playerWon));
     }
     
@@ -199,7 +197,8 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(1.0f);
         }
 
-        roundIndex = index;                     // go to next level
+
+        roundIndex = playerWon ? index : 0;      // go to next level if player won, or go back to main menu
         StartCoroutine(StartRound());
     }
 
