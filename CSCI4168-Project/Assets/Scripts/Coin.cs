@@ -41,7 +41,7 @@ public class Coin : MonoBehaviour
 
         while (audio?.isPlaying ?? false)
         {
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
 
         Destroy(gameObject);

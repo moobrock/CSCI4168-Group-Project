@@ -39,6 +39,14 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
         SetDestination();
     }
 
+    private void Update()
+    {
+        if (attackTarget == null)
+        {
+            SetDestination();
+        }
+    }
+
     public Transform GetTransform()
     {
         try

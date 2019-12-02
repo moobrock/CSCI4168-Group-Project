@@ -26,9 +26,15 @@ public class TrebucheggController : MonoBehaviour
     private float startTime;
     public float lifeTime = 1 * 60f;
 
+    public float updateTime;
+    public float updateFrequency = 3f;
+
+    public float radius = 5f;
+
     private void Start()
     {
         startTime = Time.realtimeSinceStartup;
+        updateTime = 0f;
 
         shootDirection = -transform.up;
 
@@ -42,7 +48,7 @@ public class TrebucheggController : MonoBehaviour
         StartCoroutine(FireBullets());
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         float time = Time.realtimeSinceStartup - startTime;
         healthController.SetHealth(1f - time / lifeTime);
@@ -53,12 +59,32 @@ public class TrebucheggController : MonoBehaviour
             Destroy(gameObject);
         }
 
+        updateTime += Time.fixedDeltaTime;
+
         try
         {
             if (targettedEnemy != null && targettedEnemy?.GetTransform() != null)
                 shootDirection = targettedEnemy.GetTransform().position - transform.position;
             else
-                shootDirection = -transform.forward;
+            {
+                if (updateTime > updateFrequency)
+                {
+                    updateTime = 0f;
+
+                    Ray ray = new Ray(transform.position, transform.position + transform.forward);
+
+                    RaycastHit[] hits = Physics.SphereCastAll(ray, radius, radius);
+
+                    foreach (RaycastHit hit in hits)
+                    {
+                        if (hit.transform?.tag == "Enemy")
+                        {
+                            targettedEnemy = hit.transform.GetComponent<EnemyController>() ?? hit.transform.GetComponentInChildren<EnemyController>();
+                            break;
+                        }
+                    }
+                }
+            }
         }
         catch (MissingReferenceException e)
         {

@@ -65,7 +65,6 @@ public class GreneggController : MonoBehaviour
         // times up - explode 
 
         Ray ray = new Ray(transform.position, transform.position + transform.forward);
-        Physics.SphereCast(ray, 5f);
 
         RaycastHit[] hits = Physics.SphereCastAll(ray, damageRadius, damageRadius);
 

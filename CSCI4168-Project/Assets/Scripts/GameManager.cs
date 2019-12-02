@@ -169,7 +169,7 @@ public class GameManager : MonoBehaviour
         int index = GetNextLevelIndex();        // save index of next level
 
         SceneManager.LoadScene("EndOfRound");
-        yield return new WaitForEndOfFrame();
+        yield return new WaitForFixedUpdate();
         yield return new WaitForEndOfFrame();
 
         Text timerText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Timer")?.GetChild(0)?.GetComponent<Text>();
@@ -205,10 +205,12 @@ public class GameManager : MonoBehaviour
     private IEnumerator ShowTimer()
     {
         float time = 0f;
+        float incrementTime = 0f;
 
         while (time < roundTime)
         {
             time += Time.deltaTime;
+            incrementTime += Time.deltaTime;
 
             if (roundTimerText != null)
             {
@@ -216,12 +218,13 @@ public class GameManager : MonoBehaviour
             }
 
             // add approx 1 coin per every 10s to avoid player running out of resources
-            if ((roundTime - time) % 10 < 0.01f)
+            if (incrementTime >= 10f)
             {
+                incrementTime = 0f;
                 AddCoins(1);
             }
 
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
 
         EndRound(true);
