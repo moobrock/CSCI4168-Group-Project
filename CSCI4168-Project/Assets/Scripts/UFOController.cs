@@ -116,7 +116,7 @@ public class UFOController : MonoBehaviour, EnemyController
                 yield break;
             }
 
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
     }
 
@@ -145,7 +145,7 @@ public class UFOController : MonoBehaviour, EnemyController
             position = Vector3.MoveTowards(transform.position, spawn, speed);
             position.y = 0;
             transform.position = position;
-            yield return new WaitForEndOfFrame();
+            yield return new WaitForFixedUpdate();
         }
 
         Destroy(gameObject);
