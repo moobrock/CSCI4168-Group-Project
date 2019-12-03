@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
 
     public static GameManager gameManager;
 
+    private bool gameRunning;
+
     private void Awake()
     {
         if (gameManager != null)
@@ -48,17 +50,6 @@ public class GameManager : MonoBehaviour
         FindReferences();
         startTime = Time.realtimeSinceStartup;
         StartCoroutine(ShowTimer());
-    }
-
-    private IEnumerator StartGame()
-    {
-        roundIndex = 0;
-
-        SceneManager.LoadScene("FrontEnd");
-
-        yield return new WaitForEndOfFrame();
-
-        FindReferences();
     }
 
     public Transform GetPenTransform()
@@ -89,7 +80,7 @@ public class GameManager : MonoBehaviour
         return nearest;
     }
 
-    // return index between 0 and second last scene index
+    // return index between 0 (FrontEnd) and second last scene index (index of last round)
     private int GetNextLevelIndex()
     {
         return (SceneManager.GetActiveScene().buildIndex + 1) % (SceneManager.sceneCountInBuildSettings - 1);
@@ -103,6 +94,7 @@ public class GameManager : MonoBehaviour
     public void StartRound(int roundNum)
     {
         roundIndex = roundNum;
+        StopAllCoroutines();
         StartCoroutine(StartRound());
     }
 
@@ -124,7 +116,7 @@ public class GameManager : MonoBehaviour
     {
         StartCoroutine(LoadEndOfRoundScene(playerWon));
     }
-    
+
     private IEnumerator SpawnEnemies()
     {
         float time = 0f;
@@ -147,7 +139,7 @@ public class GameManager : MonoBehaviour
                     {
                         enemy = GameObject.Instantiate(ufoEnemyPrefab, enemySpawns[enemySpawnIndex].position, Quaternion.identity);
                     }
-                    
+
                     // spawn ground units 90% of the time
                     //else
                     {
@@ -160,7 +152,7 @@ public class GameManager : MonoBehaviour
                 nextEnemySpawnTime = enemySpawnRate + Random.Range(-enemySpawnVariance, enemySpawnVariance);
             }
 
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -169,7 +161,7 @@ public class GameManager : MonoBehaviour
         int index = GetNextLevelIndex();        // save index of next level
 
         SceneManager.LoadScene("EndOfRound");
-        yield return new WaitForFixedUpdate();
+        yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();
 
         Text timerText = GameObject.Find("Canvas")?.transform?.Find("Panel")?.transform?.Find("Timer")?.GetChild(0)?.GetComponent<Text>();

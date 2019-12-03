@@ -19,7 +19,7 @@ public class TowerController : MonoBehaviour
             attackPosition = transform.GetChild(0);
         towerModel = transform.GetChild(1).gameObject;
     }
-    
+
     public Transform GetAttackPosition() { return attackPosition; }
 
     public float GetHealth() { return health; }
@@ -56,6 +56,9 @@ public class TowerController : MonoBehaviour
     protected void DestroyTower()
     {
         Debug.Log(name + " was destroyed");
+
+        if (tag == "Barn")
+            GameManager.gameManager.EndRound();
 
         Destroy(gameObject);
     }

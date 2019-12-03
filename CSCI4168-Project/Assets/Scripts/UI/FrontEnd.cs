@@ -18,4 +18,9 @@ public class FrontEnd : MonoBehaviour
         mainPanel?.SetActive(true);
         rulesPanel?.SetActive(false);
     }
+
+    public void StartLevel(int level)
+    {
+        GameManager.gameManager?.StartRound(level);
+    }
 }
