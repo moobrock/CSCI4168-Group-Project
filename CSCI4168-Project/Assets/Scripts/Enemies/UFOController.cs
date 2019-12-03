@@ -25,6 +25,8 @@ public class UFOController : MonoBehaviour, EnemyController
 
     private int cowsAbducted;
 
+    private bool killed;
+
     void Start()
     {
         targetPosition = transform.position;
@@ -185,6 +187,8 @@ public class UFOController : MonoBehaviour, EnemyController
                 attackTarget?.ReturnCows(cowsAbducted);
             }
 
+            killed = true;
+
             Destroy(this.gameObject);
         }
 
@@ -194,14 +198,11 @@ public class UFOController : MonoBehaviour, EnemyController
     //returns child transform (UFO model) or this transform if not found
     public Transform GetTransform()
     {
-        try
-        {
-            return transform?.GetChild(0)?.transform ?? transform;
-        }
-
-        catch (MissingReferenceException e)
+        if (killed)
         {
             return null;
         }
+
+        return transform?.GetChild(0)?.transform ?? transform;
     }
 }
