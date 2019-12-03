@@ -28,6 +28,8 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
     private TowerController attackTarget;
     private AudioSource audio;
 
+    private bool dead;
+
     private void Start()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -39,7 +41,7 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
         SetDestination();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (attackTarget == null)
         {
@@ -49,15 +51,10 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
 
     public Transform GetTransform()
     {
-        try
-        {
-            return transform;
-        }
-
-        catch (MissingReferenceException e)
-        {
+        if (dead)
             return null;
-        }
+
+        return transform;
     }
 
     private void SetDestination()
@@ -88,7 +85,6 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
             {
                 Transform attackPosition = tower.GetAttackPosition();
 
-                // TODO: use navmesh agent to check path distance (to make sure the tower isn't on another nearby path)
                 float pathDistance = TowerController.attackRadius;
 
                 // go to attack position if on the same path (navmesh agent path distance is short)
@@ -218,7 +214,10 @@ public class GroundEnemyController : MonoBehaviour, EnemyController
                 Instantiate(coinPrefab, transform.position, Quaternion.Euler(90, 0, 0));
             }
 
+            dead = true;
+
             Destroy(this.gameObject);
+            Destroy(this);
         }
 
         healthController.SetHealth(health / maxHealth);

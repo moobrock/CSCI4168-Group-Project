@@ -57,9 +57,6 @@ public class TowerController : MonoBehaviour
     {
         Debug.Log(name + " was destroyed");
 
-        if (tag == "Barn")
-            GameManager.gameManager.EndRound();
-
         Destroy(gameObject);
     }
 }

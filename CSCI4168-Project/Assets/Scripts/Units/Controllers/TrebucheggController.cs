@@ -8,7 +8,7 @@ public class TrebucheggController : MonoBehaviour
 
     public int numAvailable = 3;
 
-    private float fireRate = 1.6f;
+    private static float fireRate = 1.6f;
     private float force = 3f;
 
     public GameObject trebucheggPrefab;
@@ -26,15 +26,11 @@ public class TrebucheggController : MonoBehaviour
     private float startTime;
     public float lifeTime = 1 * 60f;
 
-    public float updateTime;
-    public float updateFrequency = 3f;
-
     public float radius = 5f;
 
     private void Start()
     {
         startTime = Time.realtimeSinceStartup;
-        updateTime = 0f;
 
         shootDirection = -transform.up;
 
@@ -58,39 +54,21 @@ public class TrebucheggController : MonoBehaviour
             StopAllCoroutines();
             Destroy(gameObject);
         }
+    }
 
-        updateTime += Time.fixedDeltaTime;
+    private void FindTarget()
+    {
+        Ray ray = new Ray(transform.position, transform.position + transform.forward);
 
-        try
+        RaycastHit[] hits = Physics.SphereCastAll(ray, radius, radius);
+
+        foreach (RaycastHit hit in hits)
         {
-            if (targettedEnemy != null && targettedEnemy?.GetTransform() != null)
-                shootDirection = targettedEnemy.GetTransform().position - transform.position;
-            else
+            if (hit.transform?.tag == "Enemy")
             {
-                if (updateTime > updateFrequency)
-                {
-                    updateTime = 0f;
-
-                    Ray ray = new Ray(transform.position, transform.position + transform.forward);
-
-                    RaycastHit[] hits = Physics.SphereCastAll(ray, radius, radius);
-
-                    foreach (RaycastHit hit in hits)
-                    {
-                        if (hit.transform?.tag == "Enemy")
-                        {
-                            targettedEnemy = hit.transform.GetComponent<EnemyController>() ?? hit.transform.GetComponentInChildren<EnemyController>();
-                            break;
-                        }
-                    }
-                }
+                targettedEnemy = hit.transform.GetComponent<EnemyController>() ?? hit.transform.GetComponentInChildren<EnemyController>();
+                break;
             }
-        }
-        catch (MissingReferenceException e)
-        {
-            Debug.Log("Targetted enemy lost. Error: " + e.StackTrace); 
-
-            shootDirection = -transform.forward;
         }
     }
 
@@ -128,6 +106,11 @@ public class TrebucheggController : MonoBehaviour
     {
         while (true)
         {
+            if (targettedEnemy == null || targettedEnemy != null && targettedEnemy.GetTransform() == null)
+            {
+                FindTarget();
+            }
+
             if (targettedEnemy != null && targettedEnemy.GetTransform() != null)
             {
                 GameObject projectile = Instantiate(trebucheggPrefab, transform.position + Vector3.up * 0.5f, Quaternion.identity); // TODO: rotate projectile towards enemy
@@ -168,15 +151,20 @@ public class TrebucheggController : MonoBehaviour
                 {
                     Destroy(projectile);
                 }
+
+                yield return new WaitForSeconds(fireRate);
             }
 
-            yield return new WaitForSeconds(fireRate);
+            else
+            {
+                yield return new WaitForFixedUpdate();
+            }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Enemy" && targettedEnemy?.GetTransform() == null)
+        if (other.tag == "Enemy" && (targettedEnemy == null))
         {
             targettedEnemy = other.GetComponent<EnemyController>() ?? other.GetComponentInChildren<EnemyController>();
         }
@@ -184,7 +172,7 @@ public class TrebucheggController : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Enemy" && targettedEnemy?.GetTransform() == null)
+        if (other.tag == "Enemy" && (targettedEnemy == null))
         {
             targettedEnemy = other.GetComponent<EnemyController>() ?? other.GetComponentInChildren<EnemyController>();
         }
@@ -192,7 +180,8 @@ public class TrebucheggController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Enemy" && targettedEnemy?.GetTransform() != null && targettedEnemy == (other.GetComponent<EnemyController>() ?? other.GetComponentInChildren<EnemyController>()))
+        if (other.tag == "Enemy" && targettedEnemy != null && targettedEnemy?.GetTransform() != null &&   // enemy that isn't dead
+            targettedEnemy == (other.GetComponent<EnemyController>() ?? other.GetComponentInChildren<EnemyController>()))       // same as targetted enemy
         {
             targettedEnemy = null;
         }
